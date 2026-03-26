@@ -1,7 +1,6 @@
 package mai_onsn.trisona.module.play_bar
 
 import androidx.compose.animation.core.LinearOutSlowInEasing
-import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Canvas
@@ -14,12 +13,11 @@ import androidx.compose.runtime.*
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.geometry.CornerRadius
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Shape
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.input.pointer.PointerIcon
 import androidx.compose.ui.input.pointer.pointerHoverIcon
 import androidx.compose.ui.unit.Dp
@@ -29,15 +27,14 @@ import kotlinx.coroutines.delay
 import mai_onsn.trisona.Config.animationBaseRate
 import mai_onsn.trisona.Config.volume
 import mai_onsn.trisona.module.util.interaction
-import mai_onsn.trisona.module.util.tweenSpecDp
 import mai_onsn.trisona.module.util.tweenSpecFloat
 import mai_onsn.trisona.theme.LocalAppTheme
 import mai_onsyn.trisona.core.TrisonaKotlinInterface.player
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.skiko.Cursor
 import trisona.sharedui.generated.resources.Res
-import trisona.sharedui.generated.resources.volume
-import trisona.sharedui.generated.resources.volume_slash
+import trisona.sharedui.generated.resources.icon_play_volume
+import trisona.sharedui.generated.resources.icon_play_volume_slash
 
 @Composable
 fun VolumeButton(
@@ -47,11 +44,11 @@ fun VolumeButton(
 ) {
     val theme = LocalAppTheme.current
 
-    var volumeIcon by remember { mutableStateOf(Res.drawable.volume) }
-    LaunchedEffect(volume) {
-        volumeIcon = when (volume) {
-            0 -> Res.drawable.volume_slash
-            else -> Res.drawable.volume
+    var volumeIcon by remember { mutableStateOf(Res.drawable.icon_play_volume) }
+    LaunchedEffect(player.volume) {
+        volumeIcon = when (player.volume) {
+            0 -> Res.drawable.icon_play_volume_slash
+            else -> Res.drawable.icon_play_volume
         }
         delay(500)
     }
@@ -69,15 +66,7 @@ fun VolumeButton(
                 onHoverEnter = { showPopup = true },
             )
     ) {
-        val popupHeight by animateDpAsState(
-            targetValue = if (isHovered || isPressed) maxHeight else maxWidth,
-            animationSpec = tweenSpecDp
-        )
-//        val popupShadowStrength by animateFloatAsState(
-//            targetValue = if (showPopup) 1f else 0f,
-//            animationSpec = tweenSpecFloat
-//        )
-        val popupOpacity by animateFloatAsState(
+        val popupShowProgress by animateFloatAsState(
             targetValue = if (isHovered || isPressed) 1f else 0f,
             animationSpec = tweenSpecFloat,
             finishedListener = {
@@ -89,7 +78,7 @@ fun VolumeButton(
             contentDescription = null,
             tint = theme.controlIconFill,
             modifier = Modifier
-                .size(15.dp)
+                .size(20.dp)
                 .align(Alignment.Center)
         )
         if (showPopup) {
@@ -99,15 +88,16 @@ fun VolumeButton(
             ) {
                 Box(
                     Modifier
-                        .alpha(popupOpacity)
-                        .shadow(
-                            elevation = 12.dp,
-                            shape = RoundedCornerShape(maxWidth / 2),
-                            ambientColor = theme.backGroundShadow.copy(0.3f),
-                            spotColor = theme.backGroundShadow.copy(0.5f),
-                        )
+                        .graphicsLayer {
+                            alpha = popupShowProgress
+                            shadowElevation = 12.dp.toPx()
+                            shape = RoundedCornerShape(maxWidth / 2)
+                            clip = false
+                            ambientShadowColor = theme.backGroundShadow.copy(0.3f)
+                            spotShadowColor = theme.backGroundShadow.copy(0.5f)
+                        }
                         .width(maxWidth)
-                        .height(popupHeight)
+                        .height(maxWidth + (maxHeight - maxWidth) * popupShowProgress)
                         .clip(RoundedCornerShape(maxWidth / 2))
                         .background(theme.popupBaseColor)
                         .interaction(

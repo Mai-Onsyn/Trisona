@@ -25,6 +25,10 @@ public class TrisonaPlayer {
 
         player.setOnMusicEnd(() -> {
             if (onMusicEnd != null) onMusicEnd.run(currentMusic);
+            if (queue.getPlayMode() == PlayQueue.PlayMode.REPEAT) {
+                seek(0);
+                return;
+            }
             this.next();
         });
     }
@@ -94,6 +98,10 @@ public class TrisonaPlayer {
         }
 
         return (float) msg.pcmByteLength / msg.getBPS() * 1000f;
+    }
+
+    public void setPlayMode(int mode) {
+        queue.setPlayMode(PlayQueue.PlayMode.values()[mode]);
     }
 
     public float getPlayingPosition() {

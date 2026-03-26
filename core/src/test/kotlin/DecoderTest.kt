@@ -16,8 +16,11 @@ fun main() {
     val m3 = MusicMessage()
     m3.audioPath = UniversalPath(null, "D:\\CloudMusic\\雪桜草 - 渚 ~君と目指した高み、愿いが叶う场所~.mp3")
 
+    val m4 = MusicMessage()
+    m4.audioPath = UniversalPath(null, "D:/Users/Desktop/Files/Videos/usotuki.wav")
+
     player.play()
-    player.setMusic(m1)
+    player.setMusic(m4)
     println("playing")
 //    Thread.sleep(5000)
 //

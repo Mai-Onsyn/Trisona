@@ -21,8 +21,40 @@ import androidx.compose.ui.input.pointer.pointerHoverIcon
 import mai_onsn.trisona.theme.LocalAppTheme
 import org.jetbrains.skiko.Cursor
 
+
 @Composable
-fun ClickableIconButtonScaleEffect(
+fun ClickableScaleButtonEffect(
+    modifier: Modifier = Modifier,
+    onClick: () -> Unit = {},
+    hoverScale: Float = 1.1f,
+    pressedScale: Float = 0.9f,
+    content: @Composable BoxScope.() -> Unit,
+) {
+    var isHovered by remember { mutableStateOf(false) }
+    var isPressed by remember { mutableStateOf(false) }
+
+    val scale by animateFloatAsState(
+        if (isHovered && !isPressed) hoverScale else if (isPressed) pressedScale else 1f
+    )
+
+    Box(
+        modifier = modifier
+            .interaction(
+                onHoveredChange = { isHovered = it },
+                onPressedChange = { isPressed = it },
+                onClick = { onClick() }
+            )
+            .pointerHoverIcon(PointerIcon(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR)))
+            .scale(scale),
+        contentAlignment = Alignment.Center
+    ) {
+        content()
+    }
+}
+
+
+@Composable
+fun ClickableRoundIconButtonScaleEffect(
     modifier: Modifier = Modifier,
     onClick: () -> Unit = {},
     backgroundColor: Color? = null,
@@ -56,13 +88,3 @@ fun ClickableIconButtonScaleEffect(
         content()
     }
 }
-
-//.onDragInteraction(
-//onPressed = { isDragging = true },
-//onReleased = { isDragging = false }
-//)
-//.clickable(
-//interactionSource = interactionSource,
-//indication = null,
-//onClick = onClick
-//)

@@ -25,7 +25,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import mai_onsn.trisona.JImage
-import mai_onsn.trisona.module.util.cardPath
+import mai_onsn.trisona.theme.cardPath
 import mai_onsn.trisona.module.util.interaction
 import mai_onsn.trisona.theme.LocalAppTheme
 import kotlin.math.PI

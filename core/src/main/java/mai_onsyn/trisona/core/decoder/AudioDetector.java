@@ -85,8 +85,9 @@ public class AudioDetector {
             amsg.sampleRate = audioHeader.getSampleRateAsNumber();
             amsg.bitRate = (int) audioHeader.getBitRateAsNumber();
             amsg.bitDepth = audioHeader.getBitsPerSample();
+            amsg.fileByteLength = file.length();
 
-            mmsg.audioMessage = amsg;
+            mmsg.setaMsgHeader(amsg);
             log.debug("Detected: {}", mmsg);
             return mmsg;
         } catch (CannotReadException | TagException | InvalidAudioFrameException | ReadOnlyFileException | IOException e) {

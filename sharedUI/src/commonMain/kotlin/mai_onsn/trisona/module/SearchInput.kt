@@ -30,12 +30,12 @@ import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import mai_onsn.trisona.module.util.parallelogramPath
+import mai_onsn.trisona.theme.parallelogramPath
 import mai_onsn.trisona.theme.AppColors
 import mai_onsn.trisona.theme.LocalAppTheme
 import org.jetbrains.compose.resources.painterResource
 import trisona.sharedui.generated.resources.Res
-import trisona.sharedui.generated.resources.search
+import trisona.sharedui.generated.resources.icon_search
 import kotlin.math.PI
 
 var InputAreaBoundInWindow = Rect.Zero
@@ -44,6 +44,9 @@ var InputAreaBoundInWindow = Rect.Zero
 fun SearchInput(
     modifier: Modifier = Modifier
 ) {
+
+    val theme = LocalAppTheme.current
+
     val interactionSource = remember { MutableInteractionSource() }
     val isFocused by interactionSource.collectIsFocusedAsState()
     val isPressed by interactionSource.collectIsPressedAsState()
@@ -60,7 +63,7 @@ fun SearchInput(
             shape = SearchInputShape
         )
         .clip(SearchInputShape)
-        .background(LocalAppTheme.current.searchFieldColor)
+        .background(theme.buttonBaseColor)
     ) {
 
         var text by remember { mutableStateOf("") }
@@ -75,19 +78,19 @@ fun SearchInput(
             value = text,
             onValueChange = { text = it },
             singleLine = true,
-            cursorBrush = SolidColor(LocalAppTheme.current.textBaseColor),
+            cursorBrush = SolidColor(theme.textBaseColor),
             interactionSource = interactionSource,
             textStyle = TextStyle(
-                color = LocalAppTheme.current.textBaseColor,
+                color = theme.textBaseColor,
                 fontSize = 15.sp
             ),
             decorationBox = { innerTextField ->
 
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     Icon(
-                        painter = painterResource(Res.drawable.search),
+                        painter = painterResource(Res.drawable.icon_search),
                         contentDescription = null,
-                        tint = LocalAppTheme.current.iconMain,
+                        tint = theme.iconMain,
                         modifier = Modifier
                             .size(15.dp)
                     )
@@ -100,7 +103,7 @@ fun SearchInput(
                         if (text.isEmpty()) {
                             Text(
                                 text = "Search",
-                                color = LocalAppTheme.current.textPromptColor.copy(alpha = 0.5f),
+                                color = theme.textPromptColor.copy(alpha = 0.5f),
                             )
                         }
                         innerTextField()
@@ -112,4 +115,3 @@ fun SearchInput(
 }
 
 val SearchInputShape = GenericShape { size, _ -> parallelogramPath(size, (PI/2.25).toFloat(), 4f) }
-

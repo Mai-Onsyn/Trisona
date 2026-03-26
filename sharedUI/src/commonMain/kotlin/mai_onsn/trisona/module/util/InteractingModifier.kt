@@ -7,33 +7,6 @@ import androidx.compose.ui.input.pointer.PointerEventType
 import androidx.compose.ui.input.pointer.PointerInputScope
 import androidx.compose.ui.input.pointer.pointerInput
 
-//fun Modifier.onDragInteraction(
-//    onPressed: () -> Unit = {},
-//    onReleased: () -> Unit = {},
-//    onDragging: (event: PointerEvent) -> Unit = {}
-//): Modifier = this.pointerInput(Unit) {
-//    awaitEachGesture {
-//        try {
-//            awaitFirstDown(pass = PointerEventPass.Initial)
-//            onPressed()
-//            do {
-//                val event = awaitPointerEvent(pass = PointerEventPass.Initial)
-//                val isAnyPressed = event.changes.any { it.pressed }
-//
-//                onDragging(event)
-//
-//            } while (isAnyPressed)
-//
-//            onReleased()
-//        } catch (c: Exception) {
-//            onReleased()
-//            throw c
-//        } finally {
-//            onReleased()
-//        }
-//    }
-//}
-
 fun Modifier.interaction(
     onPress: PointerInputScope.(PointerEvent) -> Unit = {},
     onRelease: PointerInputScope.(PointerEvent) -> Unit = {},
@@ -93,6 +66,8 @@ fun Modifier.interaction(
 
                         if (isWithinBounds) {
                             onClick(event)
+
+//                            event.changes.forEach { it.consume() }
                         }
                     }
                     isPressedNow = false

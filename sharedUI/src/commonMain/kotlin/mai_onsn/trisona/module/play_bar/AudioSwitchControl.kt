@@ -8,7 +8,7 @@ import androidx.compose.ui.draw.drawWithCache
 import androidx.compose.ui.graphics.drawscope.withTransform
 import androidx.graphics.shapes.CornerRounding
 import androidx.graphics.shapes.RoundedPolygon
-import mai_onsn.trisona.module.util.toComposePath
+import mai_onsn.trisona.theme.toComposePath
 import mai_onsn.trisona.theme.LocalAppTheme
 
 @OptIn(ExperimentalMaterial3ExpressiveApi::class)

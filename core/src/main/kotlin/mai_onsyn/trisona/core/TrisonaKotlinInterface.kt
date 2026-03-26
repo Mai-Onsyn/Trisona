@@ -15,12 +15,15 @@ object TrisonaKotlinInterface {
     init {
         val m1 = MusicMessage()
         m1.audioPath = UniversalPath(null, "D:\\CloudMusic\\monet - GHOST×GRADUATION.flac")
+        m1.currentQuality = Music.MusicQuality.NATIVE
 
         val m2 = MusicMessage()
         m2.audioPath = UniversalPath(null, "D:\\Users\\Desktop\\Files\\voice\\Adio\\monet - ナグルファルの船上にて.wav")
+        m2.currentQuality = Music.MusicQuality.NATIVE
 
         val m3 = MusicMessage()
         m3.audioPath = UniversalPath(null, "D:\\CloudMusic\\雪桜草 - 渚 ~君と目指した高み、愿いが叶う场所~.mp3")
+        m3.currentQuality = Music.MusicQuality.NATIVE
 
         player.setOnMusicStart { music ->
             val mmsg = AudioDetector.detectMusic(File(music.info.audioPath.path.url))

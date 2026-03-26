@@ -1,4 +1,4 @@
-package mai_onsn.trisona.module.util
+package mai_onsn.trisona.theme
 
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Path

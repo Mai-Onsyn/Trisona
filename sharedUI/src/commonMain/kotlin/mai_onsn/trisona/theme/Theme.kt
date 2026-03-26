@@ -62,10 +62,12 @@ data class AppTheme(
     val backgroundBloom: Color,
     val albumCardBase: Color,
     val textBaseColor: Color,
+    val textLightColor: Color, // light = 轻
     val textPromptColor: Color,
     val titleBarBase: Color,
     val titleBarGradient: Color,
-    val searchFieldColor: Color,
+    val buttonBaseColor: Color,
+    val buttonSelectedBaseColor: Color,
     val hoverCover: Color,
     val pressedCover: Color,
     val hoverBase: Color,
@@ -84,10 +86,11 @@ val LightColorTheme = AppTheme(
     backgroundBloom = AppColors.LightBloomPink,
     albumCardBase = AppColors.AccentBlueHover,
     textBaseColor = AppColors.LightText,
+    textLightColor = Color(0xFF99CCEE),
     textPromptColor = AppColors.TextPrompt,
     titleBarBase = AppColors.LightTitleBar,
     titleBarGradient = AppColors.LightGradient,
-    searchFieldColor = AppColors.LightSearchField,
+    buttonBaseColor = AppColors.LightSearchField,
     hoverCover = AppColors.LightHoverCover,
     pressedCover = Color(0xFF6080A0),
     hoverBase = Color(0xFFC0C0C0),
@@ -95,7 +98,8 @@ val LightColorTheme = AppTheme(
     controlIconFill = AppColors.LightControlIconFill,
     progressBarColor = AppColors.White,
     trackColor = Color(0xFF363545),
-    popupBaseColor = Color(0xFFA0A0FF)
+    popupBaseColor = Color(0xFFA0A0FF),
+    buttonSelectedBaseColor = Color(40, 60, 90)
 )
 
 val DarkColorTheme = AppTheme(
@@ -106,10 +110,11 @@ val DarkColorTheme = AppTheme(
     backgroundBloom = AppColors.DarkBloomBlue,
     albumCardBase = AppColors.DarkCard,
     textBaseColor = AppColors.DarkText,
+    textLightColor = Color(0xFF4488FF),
     textPromptColor = AppColors.TextPrompt,
     titleBarBase = AppColors.DarkTitleBar,
     titleBarGradient = AppColors.DarkGradient,
-    searchFieldColor = AppColors.DarkSearchField,
+    buttonBaseColor = AppColors.DarkSearchField,
     hoverCover = AppColors.DarkHoverCover,
     pressedCover = Color(0xFF6080A0),
     hoverBase = Color(0xFFC0C0C0),
@@ -118,4 +123,5 @@ val DarkColorTheme = AppTheme(
     progressBarColor = AppColors.White,
     trackColor = Color(0xFF363545),
     popupBaseColor = Color(0xFF3030A0),
+    buttonSelectedBaseColor = Color(73, 110, 166)
 )

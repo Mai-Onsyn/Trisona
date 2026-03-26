@@ -2,6 +2,8 @@ package mai_onsyn.trisona.core.play;
 
 import mai_onsyn.trisona.core.data.Music;
 import mai_onsyn.trisona.core.utils.HistoryBuffer;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -10,12 +12,14 @@ import static mai_onsyn.trisona.Global.RANDOM;
 
 public class PlayQueue extends PlayList {
 
+    private static final Logger log = LoggerFactory.getLogger(PlayQueue.class);
     private final List<Integer> shuffleIndexList;
     private final HistoryBuffer<Integer> historyBuffer;
     private PlayMode playMode = PlayMode.SEQUENCE;
 
     public enum PlayMode {
-        SHUFFLE, REPEAT, SEQUENCE, LOOP, RANDOM
+//         0       1      2        3       4
+        SEQUENCE, LOOP, REPEAT, SHUFFLE, RANDOM
     }
 
     public PlayQueue() {
@@ -83,6 +87,11 @@ public class PlayQueue extends PlayList {
 
     public void setPlayMode(PlayMode playMode) {
         this.playMode = playMode;
+        log.debug("Play mode set to {}", playMode);
+    }
+
+    public PlayMode getPlayMode() {
+        return playMode;
     }
 
     private void shuffle() {

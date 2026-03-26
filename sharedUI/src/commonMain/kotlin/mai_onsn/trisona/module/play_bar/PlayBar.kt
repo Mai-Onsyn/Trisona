@@ -20,10 +20,10 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import kotlinx.coroutines.delay
-import mai_onsn.trisona.module.util.ClickableIconButtonScaleEffect
+import mai_onsn.trisona.module.util.ClickableRoundIconButtonScaleEffect
 import mai_onsn.trisona.module.util.formatMillisToTime
 import mai_onsn.trisona.module.util.interaction
-import mai_onsn.trisona.module.util.parallelogramPath
+import mai_onsn.trisona.theme.parallelogramPath
 import mai_onsn.trisona.theme.LocalAppTheme
 import mai_onsyn.trisona.core.TrisonaKotlinInterface.player
 import org.jetbrains.skiko.Cursor
@@ -31,6 +31,7 @@ import kotlin.math.PI
 
 internal val progressHeight = 10.dp
 internal var adjustingProgress = false
+internal val genericButtonSize = 35.dp
 
 var pauseCallback: (() -> Unit)? = null
 
@@ -54,13 +55,18 @@ fun PlayBar(
             modifier = Modifier
                 .align(Alignment.BottomCenter)
                 .padding(bottom = 28.dp)
-                .width(160.dp),
+                .width(180.dp),
             horizontalArrangement = Arrangement.SpaceEvenly,
             verticalAlignment = Alignment.CenterVertically
         ) {
+
+            PlayModeSwitch(
+                modifier = Modifier.size(genericButtonSize),
+            )
+
             //后退
-            ClickableIconButtonScaleEffect (
-                modifier = Modifier.size(35.dp),
+            ClickableRoundIconButtonScaleEffect (
+                modifier = Modifier.size(genericButtonSize),
                 onClick = { player.previous() }
             ) {
                 AudioSwitchControl(
@@ -87,7 +93,7 @@ fun PlayBar(
                     else player.play()
                 }
             }
-            ClickableIconButtonScaleEffect (
+            ClickableRoundIconButtonScaleEffect (
                 modifier = Modifier.size(40.dp),
                 onClick = { pauseCallback?.invoke() }
             ) {
@@ -98,8 +104,8 @@ fun PlayBar(
             }
 
             //前进
-            ClickableIconButtonScaleEffect (
-                modifier = Modifier.size(35.dp),
+            ClickableRoundIconButtonScaleEffect (
+                modifier = Modifier.size(genericButtonSize),
                 onClick = { player.next() }
             ) {
                 AudioSwitchControl(
@@ -111,7 +117,7 @@ fun PlayBar(
 
             VolumeButton(
                 modifier = Modifier
-                    .size(35.dp)
+                    .size(genericButtonSize)
             )
         }
 

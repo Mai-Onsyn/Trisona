@@ -1,5 +1,6 @@
 package mai_onsyn.trisona;
 
+import mai_onsyn.trisona.core.TrisonaKotlinInterface;
 import mai_onsyn.trisona.core.message.AudioMessage;
 
 import javax.sound.sampled.AudioFormat;
