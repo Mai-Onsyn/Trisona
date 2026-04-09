@@ -1,9 +1,12 @@
 package mai_onsyn.trisona.core.decoder;
 
 import mai_onsyn.trisona.Global;
+import mai_onsyn.trisona.core.data.Album;
+import mai_onsyn.trisona.core.data.MusicQuality;
 import mai_onsyn.trisona.core.message.Artist;
 import mai_onsyn.trisona.core.message.AudioMessage;
 import mai_onsyn.trisona.core.message.MusicMessage;
+import mai_onsyn.trisona.core.utils.HashUtil;
 import org.jaudiotagger.audio.AudioFile;
 import org.jaudiotagger.audio.AudioFileIO;
 import org.jaudiotagger.audio.AudioHeader;
@@ -47,18 +50,29 @@ public class AudioDetector {
         return new DetectionResult(type, stream);
     }
 
-    public static MusicMessage detectMusic(File file) {
+    public static MusicMessage detectMusic(File file, Album album) {
         try {
             AudioFile audioFile = AudioFileIO.read(file);
             Tag tag = audioFile.getTag();
             AudioHeader audioHeader = audioFile.getAudioHeader();
 
             MusicMessage mmsg = new MusicMessage();
-            mmsg.title = tag.getFirst(FieldKey.TITLE);
-            mmsg.artists.add(new Artist(tag.getFirst(FieldKey.ARTIST)));
-            mmsg.album = tag.getFirst(FieldKey.ALBUM);
+            mmsg.enableQuality(MusicQuality.NATIVE);
+            mmsg.title = tag.getFirst(FieldKey.TITLE).trim();
+            String artistName = tag.getFirst(FieldKey.ARTIST).trim();
+            mmsg.artists.add(new Artist(HashUtil.stringToNegativeLong(artistName), artistName));
+            String albumName = tag.getFirst(FieldKey.ALBUM).trim();
+            mmsg.albumID = HashUtil.stringToNegativeLong(albumName);
             mmsg.duration = audioHeader.getTrackLength();
             mmsg.audioPath.setNativePath(file.getAbsolutePath());
+
+            if (mmsg.title == null || mmsg.title.isEmpty())
+                mmsg.title = file.getName();
+            mmsg.id = HashUtil.stringToNegativeLong(mmsg.title);
+
+            album.setId(mmsg.albumID);
+            album.setName(albumName);
+            album.add(mmsg.id);
 
             Artwork artwork = tag.getFirstArtwork();
             if (artwork != null) {
@@ -70,14 +84,15 @@ public class AudioDetector {
                 if (!coverPath.exists()) {
                     coverPath.mkdirs();
                 }
-                File coverFile = new File(coverPath.getAbsolutePath(), file.getName() + ".png");
+                File coverFile = new File(coverPath.getAbsolutePath(), mmsg.albumID + ".png");
                 if (!coverFile.exists()) {
                     coverFile.createNewFile();
                     FileOutputStream fos = new FileOutputStream(coverFile);
                     fos.write(imageData);
                     fos.close();
                 }
-                mmsg.coverPath.setNativePath(coverFile.getAbsolutePath());
+                album.setPicUrlNative(coverFile.getAbsolutePath());
+//                album.setPicUrlLocal(coverFile.getAbsolutePath());
             }
 
             AudioMessage amsg = new AudioMessage();

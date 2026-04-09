@@ -3,6 +3,8 @@ package mai_onsyn.trisona.core.play;
 import mai_onsyn.trisona.core.decoder.RingBuffer;
 import mai_onsyn.trisona.core.message.AudioMessage;
 import mai_onsyn.trisona.core.message.MusicMessage;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.FloatControl;
@@ -13,6 +15,8 @@ import static mai_onsyn.trisona.Global.APPLICATION_EXITED;
 import static mai_onsyn.trisona.Global.SYSTEM_AUDIO_FORMAT;
 
 public class JVMAudioPlayer extends AudioPlayer {
+    private static final Logger log = LoggerFactory.getLogger(JVMAudioPlayer.class);
+    private static final double MILLIS_PER_BUFFER = 23.333333333333333333333333333333333333333333333333;
     private SourceDataLine dataLine;
     private boolean isDataLineReady = false;
 
@@ -29,6 +33,8 @@ public class JVMAudioPlayer extends AudioPlayer {
             while (!APPLICATION_EXITED) {
                 playLoop();
             }
+            dataLine.stop();
+            dataLine.close();
         });
     }
 
@@ -53,10 +59,7 @@ public class JVMAudioPlayer extends AudioPlayer {
                 switch (state) {
                     case SUCCESS -> {
                         dataLine.write(chunkBuffer, 0, chunkBuffer.length);
-                        progressMillis += 21.333333333333333333333333333;
-//                        System.out.println(decoder.isDecodingFinished() + ", " + progressMillis / 1000);
-//                        AudioMessage msg = decoder.getAudioMessage();
-//                        if (msg != null && onMusicEnd != null && progressMillis >= (double) msg.byteLength / msg.getBPS() * 1000.0)
+                        progressMillis += MILLIS_PER_BUFFER;
                         if (decoder.isDecodingFinished() && onMusicEnd != null) onMusicEnd.run();
                     }
                     case FAILED -> {}
@@ -71,7 +74,7 @@ public class JVMAudioPlayer extends AudioPlayer {
             }
 
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error("Error while playing audio: {}", e.getMessage());
         }
     }
 

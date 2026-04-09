@@ -1,6 +1,8 @@
 package mai_onsyn.trisona.core.network.ncme.base
 
+import com.alibaba.fastjson2.JSON
 import com.alibaba.fastjson2.JSONObject
+import com.alibaba.fastjson2.JSONPath
 import io.ktor.client.HttpClient
 import io.ktor.client.engine.okhttp.OkHttp
 //import io.ktor.client.engine.cio.CIO
@@ -12,31 +14,15 @@ import io.ktor.client.request.prepareGet
 import io.ktor.client.request.request
 import io.ktor.client.request.url
 import io.ktor.client.statement.HttpResponse
+import io.ktor.client.statement.bodyAsBytes
 import io.ktor.client.statement.bodyAsChannel
 import io.ktor.client.statement.bodyAsText
+import io.ktor.client.statement.readRawBytes
 import io.ktor.utils.io.jvm.javaio.toInputStream
 import mai_onsyn.trisona.core.log
 import okhttp3.Protocol
 import java.io.Closeable
 import java.io.InputStream
-
-val API = NCMApi(HttpClient(OkHttp) {
-    install(HttpTimeout) {
-        requestTimeoutMillis = 30000
-        connectTimeoutMillis = 30000
-        socketTimeoutMillis = 30000
-    }
-    engine {
-        config {
-            followRedirects(true)
-            protocols(listOf(Protocol.HTTP_2, Protocol.HTTP_1_1))
-        }
-    }
-
-    defaultRequest {
-        url("https://ncmapi.mai-onsyn.us.ci")
-    }
-})
 
 class NCMApiService(val client: HttpClient) {
 
@@ -52,8 +38,10 @@ class NCMApiService(val client: HttpClient) {
             }
         }
         val fullUrl = response.call.request.url.toString()
+        val text = response.bodyAsText(Charsets.UTF_8)
         log.debug("Request: $fullUrl")
-        return JSONObject.parseObject(response.bodyAsText())
+        log.debug("Response: $text")
+        return JSON.parseObject(text)
     }
 
     suspend fun requestBody(path: String, params: Map<String, String>): ApiResponse {

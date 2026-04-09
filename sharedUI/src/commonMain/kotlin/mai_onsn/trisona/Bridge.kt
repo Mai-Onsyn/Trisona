@@ -16,7 +16,7 @@ import androidx.compose.ui.graphics.toComposeImageBitmap
 import androidx.compose.ui.layout.ContentScale
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
-import mai_onsyn.trisona.ImageLoader
+import mai_onsyn.trisona.core.network.common.ImageLoader
 
 @Composable
 fun JImage(
@@ -34,13 +34,13 @@ fun JImage(
     var isLoading by remember(url) { mutableStateOf(true) }
 
     LaunchedEffect(url) {
-        if (url == null || url.isEmpty()) {
+        if (url.isNullOrEmpty()) {
             isLoading = false
             return@LaunchedEffect
         }
         isLoading = true
         withContext(Dispatchers.IO) {
-            val bufferedImage = ImageLoader.fromURL(url)
+            val bufferedImage = ImageLoader.fromURLSync(url)
             bitmap = bufferedImage?.toComposeImageBitmap()
             isLoading = false
         }

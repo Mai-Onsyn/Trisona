@@ -26,6 +26,7 @@ import mai_onsn.trisona.module.util.interaction
 import mai_onsn.trisona.theme.parallelogramPath
 import mai_onsn.trisona.theme.LocalAppTheme
 import mai_onsyn.trisona.core.TrisonaKotlinInterface.player
+import mai_onsyn.trisona.core.message.MusicMessage
 import org.jetbrains.skiko.Cursor
 import kotlin.math.PI
 
@@ -51,6 +52,7 @@ fun PlayBar(
             .background(LocalAppTheme.current.themeMain.copy(0.5f))
             .clip(playBarShape)
     ) {
+        //控制按钮
         Row(
             modifier = Modifier
                 .align(Alignment.BottomCenter)
@@ -121,6 +123,7 @@ fun PlayBar(
             )
         }
 
+        //进度条
         val interactionSource = remember { MutableInteractionSource() }
         val isHovered by interactionSource.collectIsHoveredAsState()
         var isInteracting by remember { mutableStateOf(false) }
@@ -191,5 +194,21 @@ fun PlayBar(
                 color = LocalAppTheme.current.textPromptColor
             )
         }
+
+        //播放信息/封面
+        val emptyMusic = MusicMessage()
+        var currentMusic by remember { mutableStateOf(MusicMessage()) }
+        LaunchedEffect(player) {
+            currentMusic = player.currentMusic?: emptyMusic
+        }
+        PlayInfo(
+            modifier = Modifier
+                .fillMaxHeight()
+                .width(100.dp)
+                .padding(vertical = 10.dp)
+                .padding(start = 20.dp)
+                .align(Alignment.CenterStart),
+            musicMessage = currentMusic
+        )
     }
 }

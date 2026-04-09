@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Configuration status="WARN" packages="mai_onsyn.AnimeFX.Module">
+<Configuration status="WARN">
     <Properties>
         <Property name="LOG_FILENAME">logs/${date:yyyy-MM-dd HH-mm-ss}.log</Property>
         <Property name="CONSOLE_PATTERN">

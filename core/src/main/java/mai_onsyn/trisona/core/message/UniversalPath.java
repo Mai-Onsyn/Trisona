@@ -2,8 +2,8 @@ package mai_onsyn.trisona.core.message;
 
 public class UniversalPath extends Message {
 
-    private String netWorkUrl;
-    private String nativePath;
+    private String netWorkUrl = "";
+    private String nativePath = "";
 
     public void setNativePath(String nativePath) {
         this.nativePath = nativePath;
@@ -11,6 +11,14 @@ public class UniversalPath extends Message {
 
     public void setNetWorkUrl(String netWorkUrl) {
         this.netWorkUrl = netWorkUrl;
+    }
+
+    public String getNetWorkUrl() {
+        return netWorkUrl;
+    }
+
+    public String getNativePath() {
+        return nativePath;
     }
 
     public UniversalPath(String netWorkUrl, String nativePath) {
@@ -52,6 +60,6 @@ public class UniversalPath extends Message {
 
     @Override
     public String toString() {
-        return String.format("[UniversalPath: (Network: %s, Native: %s)]", netWorkUrl, nativePath);
+        return String.format("[Network: %s, Native: %s]", netWorkUrl, nativePath);
     }
 }

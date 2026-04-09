@@ -4,6 +4,8 @@ import mai_onsyn.trisona.Global;
 import mai_onsyn.trisona.core.message.AudioMessage;
 import mai_onsyn.trisona.core.message.MusicMessage;
 import mai_onsyn.trisona.core.message.UniversalPath;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.DataInputStream;
 import java.io.FileInputStream;
@@ -13,6 +15,7 @@ import java.util.Map;
 
 public class DecodeHandler {
 
+    private static final Logger log = LoggerFactory.getLogger(DecodeHandler.class);
     private final Map<AudioMessage.Encoding, AudioDecoder> decoders;
     private final RingBuffer ringBuffer;
     private final byte[] buffer;
@@ -41,14 +44,11 @@ public class DecodeHandler {
         this.decoders.put(AudioMessage.Encoding.FLAC, new FlacDecoder());
         this.decoders.put(AudioMessage.Encoding.OGG, new OggDecoder());
 
-//        this.musicMessage = new MusicMessage();
-//        this.audioMessage = new AudioMessage();
-
-        Thread.ofVirtual().name("DecoderThread").start(() -> {
+        new Thread(() -> {
             while (!Global.APPLICATION_EXITED) {
                 decodeLoop();
             }
-        });
+        }, "DecoderThread").start();
     }
 
     private void decodeLoop() {
@@ -59,12 +59,10 @@ public class DecodeHandler {
                 seekCallback.run();
                 seekCallback = null;
             }
-//            System.out.println(streamReady + ", " + touchedEndOfStream);
 
             if (mMsg == null && isPaused) return;
 
             if (touchedEndOfStream) dataStream.close();
-
 
             if (!streamReady) {
                 synchronized (SEEK_LOCK) {
@@ -115,7 +113,7 @@ public class DecodeHandler {
         } catch (NullPointerException ignored) {
         } catch (Exception e) {
             onDecodingError.run(e);
-            e.printStackTrace();
+            log.error("Error while decoding audio stream: {}", e.getMessage());
         }
     }
 

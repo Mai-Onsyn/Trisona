@@ -1,7 +1,7 @@
 package mai_onsyn.trisona.core.play;
 
-import mai_onsyn.trisona.core.data.Music;
 import mai_onsyn.trisona.core.message.AudioMessage;
+import mai_onsyn.trisona.core.message.MusicMessage;
 import mai_onsyn.trisona.core.utils.MusicCallback;
 
 public class TrisonaPlayer {
@@ -13,7 +13,7 @@ public class TrisonaPlayer {
     private MusicCallback onMusicEnd;
     private MusicCallback onMusicStart;
 
-    private Music currentMusic;
+    private MusicMessage currentMusic;
 
     public TrisonaPlayer(String platform) {
         switch (platform) {
@@ -40,25 +40,25 @@ public class TrisonaPlayer {
     }
 
     public void next() {
-        Music next = queue.next();
+        MusicMessage next = queue.next();
         if (next == null) {
             if (onQueueEnd != null) onQueueEnd.run(currentMusic);
             return;
         }
 
         currentMusic = next;
-        player.setMusic(next.getInfo());
+        player.setMusic(next);
         if (onMusicStart != null) onMusicStart.run(currentMusic);
     }
 
     public void previous() {
-        Music previous = queue.previous();
+        MusicMessage previous = queue.previous();
         if (previous == null) {
             return;
         }
 
         currentMusic = previous;
-        player.setMusic(previous.getInfo());
+        player.setMusic(previous);
         if (onMusicStart != null) onMusicStart.run(currentMusic);
     }
 
@@ -75,11 +75,11 @@ public class TrisonaPlayer {
     }
 
     public void specifyMusic(int index) {
-        Music music = queue.specify(index);
+        MusicMessage music = queue.specify(index);
         if (music == null) {
             return;
         }
-        player.setMusic(music.getInfo());
+        player.setMusic(music);
         if (onMusicStart != null) onMusicStart.run(music);
     }
 
@@ -98,6 +98,10 @@ public class TrisonaPlayer {
         }
 
         return (float) msg.pcmByteLength / msg.getBPS() * 1000f;
+    }
+
+    public MusicMessage getCurrentMusic() {
+        return currentMusic;
     }
 
     public void setPlayMode(int mode) {
