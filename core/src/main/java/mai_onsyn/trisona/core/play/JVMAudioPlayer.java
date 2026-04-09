@@ -1,8 +1,8 @@
 package mai_onsyn.trisona.core.play;
 
 import mai_onsyn.trisona.core.decoder.RingBuffer;
-import mai_onsyn.trisona.core.message.AudioMessage;
-import mai_onsyn.trisona.core.message.MusicMessage;
+import mai_onsyn.trisona.core.message.Audio;
+import mai_onsyn.trisona.core.message.Music;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -104,7 +104,7 @@ public class JVMAudioPlayer extends AudioPlayer {
     }
 
     @Override
-    public void setMusic(MusicMessage musicMessage) throws AudioPlayException {
+    public void setMusic(Music music) throws AudioPlayException {
         this.progressMillis = 0;
 
         decoder.pause();
@@ -112,9 +112,9 @@ public class JVMAudioPlayer extends AudioPlayer {
         dataLine.stop();
         dataLine.flush();
 
-        this.musicMessage = musicMessage;
+        this.music = music;
         ringBuffer.flushStart();
-        decoder.setMusicMessage(musicMessage);
+        decoder.setMusicMessage(music);
         ringBuffer.flushComplete();
 
         isSeeking = false;
@@ -141,7 +141,7 @@ public class JVMAudioPlayer extends AudioPlayer {
 
         shouldFlush = true;
 //        System.out.println("seek time: " + (System.nanoTime() - s));
-        AudioMessage msg = decoder.getAudioMessage();
+        Audio msg = decoder.getAudioMessage();
         if (msg != null) {
 //            System.out.println(1000.0 * msg.byteLength / msg.getBPS());
             this.progressMillis = Math.min((double) msg.pcmByteLength / msg.getBPS() * 1000.0, positionMillis);

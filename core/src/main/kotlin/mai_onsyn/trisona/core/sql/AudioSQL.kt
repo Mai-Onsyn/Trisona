@@ -1,6 +1,6 @@
 package mai_onsyn.trisona.core.sql
 
-import mai_onsyn.trisona.core.message.AudioMessage
+import mai_onsyn.trisona.core.message.Audio
 
 class AudioSQL(instance: SQLInstance): SQLOperator(instance) {
     companion object {
@@ -27,14 +27,14 @@ class AudioSQL(instance: SQLInstance): SQLOperator(instance) {
         """.trimIndent())
     }
 
-    fun storage(id: Long, musicID: Long, aMsg: AudioMessage) {
+    fun storage(id: Long, musicID: Long, aMsg: Audio) {
         insert(TABLE_NAME, id, "music_id", musicID)
         with(aMsg) {
             if (pcmByteLength != -1L)
                 insert(TABLE_NAME, id, "pcm_byte_length",pcmByteLength)
             if (fileByteLength != -1L)
                 insert(TABLE_NAME, id, "file_byte_length", fileByteLength)
-            if (encoding != AudioMessage.Encoding.UNKNOWN)
+            if (encoding != Audio.Encoding.UNKNOWN)
                 insert(TABLE_NAME, id, "encoding", encoding.name)
             if (channels != -1)
                 insert(TABLE_NAME, id, "channels", channels)
@@ -51,12 +51,12 @@ class AudioSQL(instance: SQLInstance): SQLOperator(instance) {
         }
     }
 
-    fun query(id: Long): AudioMessage? {
+    fun query(id: Long): Audio? {
         if (!contains(id)) return null
-        return AudioMessage().apply {
+        return Audio().apply {
             pcmByteLength = queryLong(id, "pcm_byte_length") ?: -1L
             fileByteLength = queryLong(id, "file_byte_length") ?: -1L
-            encoding = AudioMessage.Encoding.valueOf(queryString(id, "encoding") ?: "UNKNOWN")
+            encoding = Audio.Encoding.valueOf(queryString(id, "encoding") ?: "UNKNOWN")
             channels = queryInt(id, "channels") ?: -1
             sampleRate = queryInt(id, "sample_rate") ?: -1
             bitDepth = queryInt(id, "bit_depth") ?: -1

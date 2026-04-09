@@ -1,6 +1,6 @@
 package mai_onsyn.trisona.core.decoder;
 
-import mai_onsyn.trisona.core.message.AudioMessage;
+import mai_onsyn.trisona.core.message.Audio;
 
 import java.io.DataInputStream;
 import java.io.EOFException;
@@ -19,8 +19,8 @@ public abstract class AudioDecoder {
         void invoke(DataInputStream is);
     }
 
-    abstract AudioMessage readyAudioStream(DataInputStream is, long streamSize, StreamReadyRef readyRef) throws IOException; //读掉音频信息剩下音频流
-    abstract DataInputStream decode(DataInputStream is, AudioMessage sourceInfo) throws IOException; //解码音频流 返回解码后的PCM音频流
+    abstract Audio readyAudioStream(DataInputStream is, long streamSize, StreamReadyRef readyRef) throws IOException; //读掉音频信息剩下音频流
+    abstract DataInputStream decode(DataInputStream is, Audio sourceInfo) throws IOException; //解码音频流 返回解码后的PCM音频流
 
     DecodeRefState seek(DataInputStream is, int millisAmount) { //在解码后的PCM上进行进度跳转，跳过millAmount毫秒的音字节频流
         long bytePosition = (long) millisAmount * SYSTEM_AUDIO_MESSAGE.getBPS() / 1000;

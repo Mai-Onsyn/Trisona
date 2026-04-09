@@ -1,6 +1,6 @@
 package mai_onsyn.trisona.core.play;
 
-import mai_onsyn.trisona.core.message.MusicMessage;
+import mai_onsyn.trisona.core.message.Music;
 
 public class AndroidAudioPlayer extends AudioPlayer {
     @Override
@@ -14,7 +14,7 @@ public class AndroidAudioPlayer extends AudioPlayer {
     }
 
     @Override
-    public void setMusic(MusicMessage musicMessage) throws AudioPlayException {
+    public void setMusic(Music music) throws AudioPlayException {
 
     }
 

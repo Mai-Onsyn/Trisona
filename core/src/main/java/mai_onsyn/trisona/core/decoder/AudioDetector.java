@@ -4,8 +4,12 @@ import mai_onsyn.trisona.Global;
 import mai_onsyn.trisona.core.data.Album;
 import mai_onsyn.trisona.core.data.MusicQuality;
 import mai_onsyn.trisona.core.message.Artist;
-import mai_onsyn.trisona.core.message.AudioMessage;
-import mai_onsyn.trisona.core.message.MusicMessage;
+import mai_onsyn.trisona.core.message.Audio;
+import mai_onsyn.trisona.core.message.Music;
+import mai_onsyn.trisona.core.sql.AlbumSQL;
+import mai_onsyn.trisona.core.sql.AudioSQL;
+import mai_onsyn.trisona.core.sql.MusicSQL;
+import mai_onsyn.trisona.core.sql.SQLPackage;
 import mai_onsyn.trisona.core.utils.HashUtil;
 import org.jaudiotagger.audio.AudioFile;
 import org.jaudiotagger.audio.AudioFileIO;
@@ -21,6 +25,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.*;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Level;
 
 public class AudioDetector {
@@ -29,7 +35,7 @@ public class AudioDetector {
     }
     private static final Logger log = LoggerFactory.getLogger(AudioDetector.class);
 
-    public record DetectionResult(AudioMessage.Encoding encoding, InputStream rewindableStream) {}
+    public record DetectionResult(Audio.Encoding encoding, InputStream rewindableStream) {}
 
     public static DetectionResult detectFormatInStream(InputStream originalIn) throws IOException {
         InputStream stream = originalIn.markSupported() ?
@@ -40,7 +46,7 @@ public class AudioDetector {
         byte[] header = new byte[12];
         int read = stream.read(header);
 
-        AudioMessage.Encoding type = AudioMessage.Encoding.UNKNOWN;
+        Audio.Encoding type = Audio.Encoding.UNKNOWN;
         if (read >= 4) {
             type = performHeaderCheck(header, read);
         }
@@ -50,20 +56,24 @@ public class AudioDetector {
         return new DetectionResult(type, stream);
     }
 
-    public static MusicMessage detectMusic(File file, Album album) {
+    public static Music detectMusic(File file, Album album) {
         try {
             AudioFile audioFile = AudioFileIO.read(file);
             Tag tag = audioFile.getTag();
             AudioHeader audioHeader = audioFile.getAudioHeader();
+            if (tag == null || audioHeader == null) {
+                log.error("Cannot read audio file header: {}", file.getAbsolutePath());
+                return null;
+            }
 
-            MusicMessage mmsg = new MusicMessage();
+            Music mmsg = new Music();
             mmsg.enableQuality(MusicQuality.NATIVE);
             mmsg.title = tag.getFirst(FieldKey.TITLE).trim();
             String artistName = tag.getFirst(FieldKey.ARTIST).trim();
             mmsg.artists.add(new Artist(HashUtil.stringToNegativeLong(artistName), artistName));
             String albumName = tag.getFirst(FieldKey.ALBUM).trim();
             mmsg.albumID = HashUtil.stringToNegativeLong(albumName);
-            mmsg.duration = audioHeader.getTrackLength();
+            mmsg.duration = (int) (audioHeader.getPreciseTrackLength() * 1000);
             mmsg.audioPath.setNativePath(file.getAbsolutePath());
 
             if (mmsg.title == null || mmsg.title.isEmpty())
@@ -92,17 +102,16 @@ public class AudioDetector {
                     fos.close();
                 }
                 album.setPicUrlNative(coverFile.getAbsolutePath());
-//                album.setPicUrlLocal(coverFile.getAbsolutePath());
             }
 
-            AudioMessage amsg = new AudioMessage();
+            Audio amsg = new Audio();
 
             amsg.sampleRate = audioHeader.getSampleRateAsNumber();
             amsg.bitRate = (int) audioHeader.getBitRateAsNumber();
             amsg.bitDepth = audioHeader.getBitsPerSample();
             amsg.fileByteLength = file.length();
 
-            mmsg.setaMsgHeader(amsg);
+            mmsg.setaAudioHeader(amsg);
             log.debug("Detected: {}", mmsg);
             return mmsg;
         } catch (CannotReadException | TagException | InvalidAudioFrameException | ReadOnlyFileException | IOException e) {
@@ -111,19 +120,51 @@ public class AudioDetector {
         }
     }
 
-    private static AudioMessage.Encoding performHeaderCheck(byte[] header, int read) {
-        // FLAC
-        if (header[0] == 0x66 && header[1] == 0x4C && header[2] == 0x61 && header[3] == 0x43) return AudioMessage.Encoding.FLAC;
-        // OGG
-        if (header[0] == 0x4F && header[1] == 0x67 && header[2] == 0x67 && header[3] == 0x53) return AudioMessage.Encoding.OGG;
-        // WAV/PCM
-        if (header[0] == 0x52 && header[1] == 0x49 && header[2] == 0x46 && header[3] == 0x46) return AudioMessage.Encoding.WAV;
-        // M4A
-        if (read >= 8 && header[4] == 0x66 && header[5] == 0x74 && header[6] == 0x79 && header[7] == 0x70) return AudioMessage.Encoding.M4A;
-        // MP3 (ID3 or Frame)
-        if (header[0] == 0x49 && header[1] == 0x44 && header[2] == 0x33) return AudioMessage.Encoding.MP3;
-        if ((header[0] & 0xFF) == 0xFF && (header[1] & 0xE0) == 0xE0) return AudioMessage.Encoding.MP3;
+    public static List<Music> loadMusics(File path, SQLPackage sqls) {
+        if (!path.exists() || !path.isDirectory()) {
+            log.warn("Path does not exist: {}", path.getAbsolutePath());
+            return List.of();
+        }
 
-        return AudioMessage.Encoding.UNKNOWN;
+        File[] audios = path.listFiles(f -> {
+            String name = f.getName();
+            return f.isFile() && (
+                    name.endsWith(".flac") ||
+                    name.endsWith(".ogg") ||
+                    name.endsWith(".mp3") ||
+                    name.endsWith(".wav")
+            );
+        });
+
+        if (audios == null) return List.of();
+
+        List<Music> musics = new ArrayList<>();
+        for (File audio : audios) {
+            Album album = new Album();
+            Music music = detectMusic(audio, album);
+            if (music != null) {
+                sqls.getMusicSQL().storage(music, sqls);
+                musics.add(music);
+                sqls.getAlbumSQL().storage(album);
+            }
+        }
+        log.info("Loaded {} musics in folder {}", musics.size(), path.getAbsolutePath());
+        return musics;
+    }
+
+    private static Audio.Encoding performHeaderCheck(byte[] header, int read) {
+        // FLAC
+        if (header[0] == 0x66 && header[1] == 0x4C && header[2] == 0x61 && header[3] == 0x43) return Audio.Encoding.FLAC;
+        // OGG
+        if (header[0] == 0x4F && header[1] == 0x67 && header[2] == 0x67 && header[3] == 0x53) return Audio.Encoding.OGG;
+        // WAV/PCM
+        if (header[0] == 0x52 && header[1] == 0x49 && header[2] == 0x46 && header[3] == 0x46) return Audio.Encoding.WAV;
+        // M4A
+        if (read >= 8 && header[4] == 0x66 && header[5] == 0x74 && header[6] == 0x79 && header[7] == 0x70) return Audio.Encoding.M4A;
+        // MP3 (ID3 or Frame)
+        if (header[0] == 0x49 && header[1] == 0x44 && header[2] == 0x33) return Audio.Encoding.MP3;
+        if ((header[0] & 0xFF) == 0xFF && (header[1] & 0xE0) == 0xE0) return Audio.Encoding.MP3;
+
+        return Audio.Encoding.UNKNOWN;
     }
 }

@@ -1,6 +1,6 @@
 package mai_onsyn.trisona.core.play;
 
-import mai_onsyn.trisona.core.message.MusicMessage;
+import mai_onsyn.trisona.core.message.Music;
 import mai_onsyn.trisona.core.utils.HistoryBuffer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -40,7 +40,7 @@ public class PlayQueue extends PlayList {
         historyBuffer.record(playingIndex);
     }
 
-    public MusicMessage next() { //自动播放和用户调用
+    public Music next() { //自动播放和用户调用
         Integer next = historyBuffer.readNext();
         if (next == null) {
             int nextIndex = nextIndex();
@@ -51,7 +51,7 @@ public class PlayQueue extends PlayList {
         } else return play(next);
     }
 
-    public MusicMessage previous() { //only用户调用
+    public Music previous() { //only用户调用
         Integer previous = historyBuffer.readPrevious();
         if (previous == null) {
             if (playingIndex == 0) return null;
@@ -77,7 +77,7 @@ public class PlayQueue extends PlayList {
         };
     }
 
-    public MusicMessage specify(int index) { //只由用户调用
+    public Music specify(int index) { //只由用户调用
         if (index < 0 || index >= size())
             throw new IndexOutOfBoundsException("Specify index out of bound: " + index + " in [0, " + size() + "]");
 

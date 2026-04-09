@@ -26,6 +26,7 @@ import androidx.compose.ui.window.Popup
 import kotlinx.coroutines.delay
 import mai_onsn.trisona.Config.animationBaseRate
 import mai_onsn.trisona.Config.volume
+import mai_onsn.trisona.module.layout.PopupBox
 import mai_onsn.trisona.module.util.interaction
 import mai_onsn.trisona.module.util.tweenSpecFloat
 import mai_onsn.trisona.theme.LocalAppTheme
@@ -39,6 +40,7 @@ import trisona.sharedui.generated.resources.icon_play_volume_slash
 @Composable
 fun VolumeButton(
     modifier: Modifier = Modifier,
+    width: Dp,
     maxHeight: Dp = 120.dp,
     buttonShape: Shape = CircleShape,
 ) {
@@ -53,74 +55,39 @@ fun VolumeButton(
         delay(500)
     }
 
-    var isHovered by remember { mutableStateOf(false) }
-    var isPressed by remember { mutableStateOf(false) }
-    var showPopup by remember { mutableStateOf(false) }
-
-    BoxWithConstraints(
+    PopupBox(
         modifier = modifier
-            .clip(buttonShape)
-            .interaction(
-                onPressedChange = { isPressed = it },
-                onHoveredChange = { isHovered = it },
-                onHoverEnter = { showPopup = true },
+            .clip(buttonShape),
+        popupShape = RoundedCornerShape(width / 2),
+        maxWidth = width,
+        maxHeight = maxHeight,
+        minWidth = width,
+        minHeight = width,
+        popupAlignment = Alignment.BottomCenter,
+        interactionContentAlignment = Alignment.Center,
+        interactionContent = {
+            Icon(
+                painter = painterResource(volumeIcon),
+                contentDescription = null,
+                tint = theme.controlIconFill,
+                modifier = Modifier
+                    .size(20.dp)
+//                    .align(Alignment.Center)
             )
-    ) {
-        val popupShowProgress by animateFloatAsState(
-            targetValue = if (isHovered || isPressed) 1f else 0f,
-            animationSpec = tweenSpecFloat,
-            finishedListener = {
-                if (it == 0f) showPopup = false
-            }
-        )
-        Icon(
-            painter = painterResource(volumeIcon),
-            contentDescription = null,
-            tint = theme.controlIconFill,
-            modifier = Modifier
-                .size(20.dp)
-                .align(Alignment.Center)
-        )
-        if (showPopup) {
-            Popup(
-                alignment = Alignment.BottomCenter,
-                onDismissRequest = { isHovered = false },
-            ) {
-                Box(
-                    Modifier
-                        .graphicsLayer {
-                            alpha = popupShowProgress
-                            shadowElevation = 12.dp.toPx()
-                            shape = RoundedCornerShape(maxWidth / 2)
-                            clip = false
-                            ambientShadowColor = theme.backGroundShadow.copy(0.3f)
-                            spotShadowColor = theme.backGroundShadow.copy(0.5f)
-                        }
-                        .width(maxWidth)
-                        .height(maxWidth + (maxHeight - maxWidth) * popupShowProgress)
-                        .clip(RoundedCornerShape(maxWidth / 2))
-                        .background(theme.popupBaseColor)
-                        .interaction(
-                            onPressedChange = { isPressed = it },
-                            onHoveredChange = { isHovered = it },
-                        )
-                ) {
-                    VolumeSlider(
-                        modifier = Modifier
-                            .align(Alignment.Center)
-                            .padding(vertical = 12.dp)
-                            .width(10.dp)
-                            .pointerHoverIcon(PointerIcon(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR)))
-                    )
-                }
-            }
         }
+    ) {
+        VolumeSlider(
+            modifier = Modifier
+                .padding(vertical = 12.dp)
+                .width(10.dp)
+                .pointerHoverIcon(PointerIcon(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR)))
+        )
     }
 }
 
 @Composable
 fun VolumeSlider(
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     val theme = LocalAppTheme.current
 

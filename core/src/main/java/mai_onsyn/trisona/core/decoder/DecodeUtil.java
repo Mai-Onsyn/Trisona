@@ -1,6 +1,6 @@
 package mai_onsyn.trisona.core.decoder;
 
-import mai_onsyn.trisona.core.message.AudioMessage;
+import mai_onsyn.trisona.core.message.Audio;
 
 import javax.sound.sampled.AudioFormat;
 import javax.sound.sampled.AudioInputStream;
@@ -10,7 +10,7 @@ import java.io.DataInputStream;
 public class DecodeUtil {
     public static DataInputStream wavRedecode(
             DataInputStream sourcePCMStream,
-            AudioMessage sourceMsg,
+            Audio sourceMsg,
             AudioFormat targetFormat
     ) {
 

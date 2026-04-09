@@ -1,5 +1,5 @@
 import mai_onsyn.trisona.core.play.JVMAudioPlayer
-import mai_onsyn.trisona.core.message.MusicMessage
+import mai_onsyn.trisona.core.message.Music
 import mai_onsyn.trisona.core.message.UniversalPath
 
 val player = JVMAudioPlayer()
@@ -7,16 +7,16 @@ fun main() {
 
     player.setOnMusicEnd { println("Play end") }
 
-    val m1 = MusicMessage()
+    val m1 = Music()
     m1.audioPath = UniversalPath(null, "D:\\CloudMusic\\monet - GHOST×GRADUATION.flac")
 
-    val m2 = MusicMessage()
+    val m2 = Music()
     m2.audioPath = UniversalPath(null, "D:\\Users\\Desktop\\Files\\voice\\Adio\\monet - ナグルファルの船上にて.wav")
 
-    val m3 = MusicMessage()
+    val m3 = Music()
     m3.audioPath = UniversalPath(null, "D:\\CloudMusic\\雪桜草 - 渚 ~君と目指した高み、愿いが叶う场所~.mp3")
 
-    val m4 = MusicMessage()
+    val m4 = Music()
     m4.audioPath = UniversalPath(null, "D:/Users/Desktop/Files/Videos/usotuki.wav")
 
     player.play()
@@ -48,7 +48,7 @@ fun seek(time: Int) {
     Thread.sleep(5000)
 }
 
-fun switch(msg: MusicMessage) {
+fun switch(msg: Music) {
     player.setMusic(msg)
     println("switched to $msg")
     Thread.sleep(5000)

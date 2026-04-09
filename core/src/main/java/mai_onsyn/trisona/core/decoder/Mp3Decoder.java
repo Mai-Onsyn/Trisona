@@ -1,7 +1,7 @@
 package mai_onsyn.trisona.core.decoder;
 
 import javazoom.jl.decoder.*;
-import mai_onsyn.trisona.core.message.AudioMessage;
+import mai_onsyn.trisona.core.message.Audio;
 import org.jspecify.annotations.NonNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -15,8 +15,8 @@ public class Mp3Decoder extends AudioDecoder {
 
     private final ID3TagSizeRef ref = new ID3TagSizeRef();
     @Override
-    AudioMessage readyAudioStream(DataInputStream is, long streamSize, StreamReadyRef readyRef) throws IOException {
-        AudioMessage info;
+    Audio readyAudioStream(DataInputStream is, long streamSize, StreamReadyRef readyRef) throws IOException {
+        Audio info;
         BufferedInputStream bis = skipID3Tag(is, ref);
 
         bis.mark(10240);
@@ -25,11 +25,11 @@ public class Mp3Decoder extends AudioDecoder {
         try {
             Header frameHeader = bitstream.readFrame();
             if (frameHeader != null) {
-                info = new AudioMessage();
+                info = new Audio();
                 SampleBuffer sampleBuffer = (SampleBuffer) new Decoder().decodeFrame(frameHeader, bitstream);
                 info.sampleRate = sampleBuffer.getSampleFrequency();
                 info.channels = frameHeader.mode() == Header.SINGLE_CHANNEL ? 1 : 2;
-                info.encoding = AudioMessage.Encoding.MP3;
+                info.encoding = Audio.Encoding.MP3;
                 info.bitDepth = 16;
                 info.signed = true;
                 info.pcmByteLength = (long) (info.sampleRate * info.channels * 2 * frameHeader.total_ms((int) (streamSize - ref.value)) / 1000);
@@ -45,7 +45,7 @@ public class Mp3Decoder extends AudioDecoder {
     }
 
     @Override
-    DataInputStream decode(DataInputStream is, AudioMessage sourceInfo) throws IOException {
+    DataInputStream decode(DataInputStream is, Audio sourceInfo) throws IOException {
         Mp3ToPcmInputStream convertStream = new Mp3ToPcmInputStream(is);
         return DecodeUtil.wavRedecode(new DataInputStream(convertStream), sourceInfo, SYSTEM_AUDIO_FORMAT);
     }

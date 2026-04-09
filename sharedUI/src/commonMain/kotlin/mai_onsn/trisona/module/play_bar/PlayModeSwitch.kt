@@ -21,6 +21,7 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Popup
 import kotlinx.coroutines.delay
 import mai_onsn.trisona.Config.playMode
+import mai_onsn.trisona.module.layout.PopupBox
 import mai_onsn.trisona.module.util.ClickableScaleButtonEffect
 import mai_onsn.trisona.module.util.interaction
 import mai_onsn.trisona.module.util.tweenSpecFloat
@@ -42,10 +43,10 @@ val modeItemShape = GenericShape { size, _ -> parallelogramPath(size, (PI/2.25).
 
 @Composable
 fun PlayModeSwitch(
-    modifier: Modifier = Modifier,
+    size: Dp,
     maxWidth: Dp = 100.dp,
     maxHeight: Dp = 155.dp,
-    buttonShape: Shape = CircleShape,
+    buttonShape: Shape = RoundedCornerShape(8.dp),
 ) {
     val theme = LocalAppTheme.current
 
@@ -64,87 +65,47 @@ fun PlayModeSwitch(
         delay(500)
     }
 
-    var isHovered by remember { mutableStateOf(false) }
-    var isPressed by remember { mutableStateOf(false) }
-    var showPopup by remember { mutableStateOf(false) }
-
-    BoxWithConstraints(
-        modifier = modifier
+    PopupBox(
+        modifier = Modifier
             .clip(buttonShape)
-            .interaction(
-                onPressedChange = { isPressed = it },
-                onHoveredChange = { isHovered = it },
-                onHoverEnter = { showPopup = true },
+            .size(size),
+        popupShape = RoundedCornerShape(8.dp),
+        maxWidth = maxWidth,
+        maxHeight = maxHeight,
+        minWidth = size,
+        minHeight = size,
+        popupAlignment = Alignment.BottomEnd,
+        interactionContentAlignment = Alignment.Center,
+        interactionContent = {
+            Icon(
+                painter = painterResource(playModeIcon),
+                contentDescription = null,
+                tint = theme.controlIconFill,
+                modifier = Modifier
+                    .size(20.dp)
+//                    .align(Alignment.Center)
             )
-//            .background(Color.Red)
+        }
     ) {
-
-        val popupShowProgress by animateFloatAsState(
-            targetValue = if (isHovered || isPressed) 1f else 0f,
-            animationSpec = tweenSpecFloat,
-            finishedListener = {
-                if (it == 0f) showPopup = false
-            }
-        )
-
-        Icon(
-            painter = painterResource(playModeIcon),
-            contentDescription = null,
-            tint = theme.controlIconFill,
+        Column(
+            verticalArrangement = Arrangement.SpaceEvenly,
             modifier = Modifier
-                .size(20.dp)
-                .align(Alignment.Center)
-        )
+                .fillMaxSize()
+        ) {
+            val modeNames = remember {
+                arrayOf("顺序播放", "列表循环", "单曲循环", "随机播放", "单曲随机")
+            }
 
-        if (showPopup) {
-            Popup(
-                alignment = Alignment.BottomEnd,
-                onDismissRequest = { showPopup = false },
-            ) {
-                Box(
+            for (i in 0..4) {
+                SwitchButton(
+                    icon = playModeIconCollection[i],
+                    description = modeNames[i],
+                    id = i,
                     modifier = Modifier
-                        .graphicsLayer {
-                            alpha = popupShowProgress
-                            shadowElevation = 12.dp.toPx()
-                            shape = RoundedCornerShape(maxWidth / 2)
-                            clip = false
-                            ambientShadowColor = theme.backGroundShadow.copy(0.3f)
-                            spotShadowColor = theme.backGroundShadow.copy(0.5f)
-                        }
-                        .width(genericButtonSize + (maxWidth - genericButtonSize) * popupShowProgress)
-                        .height(genericButtonSize + (maxHeight - genericButtonSize) * popupShowProgress)
-                        .clip(RoundedCornerShape(8.dp))
-                        .background(theme.popupBaseColor)
-                        .interaction(
-                            onPressedChange = { isPressed = it },
-                            onHoveredChange = { isHovered = it },
-                        )
-                ) {
-                    Column(
-                        verticalArrangement = Arrangement.SpaceEvenly,
-                        modifier = Modifier
-                            .fillMaxSize()
-//                            .padding(4.dp)
-                    ) {
-                        val currentModeResource = playModeIconCollection[playMode]
-                        val modeNames = remember {
-                            arrayOf("顺序播放", "列表循环", "单曲循环", "随机播放", "单曲随机")
-                        }
-
-                        for (i in 0..4) {
-                            SwitchButton(
-                                icon = playModeIconCollection[i],
-                                description = modeNames[i],
-                                id = i,
-                                modifier = Modifier
-                                    .padding(horizontal = 4.dp)
-                                    .fillMaxWidth()
-                                    .height((genericButtonSize.value * 0.75).dp)
-                            )
-                        }
-                    }
-
-                }
+                        .padding(horizontal = 4.dp)
+                        .fillMaxWidth()
+                        .height((genericButtonSize.value * 0.75).dp)
+                )
             }
         }
     }
@@ -163,7 +124,6 @@ fun SwitchButton(
         hoverScale = 1.04f,
         pressedScale = 0.96f,
         onClick = {
-            println("ChangePlayMode: $id")
             playMode = id
             player.setPlayMode(id)
         }

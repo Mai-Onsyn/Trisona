@@ -25,8 +25,14 @@ import mai_onsn.trisona.module.util.formatMillisToTime
 import mai_onsn.trisona.module.util.interaction
 import mai_onsn.trisona.theme.parallelogramPath
 import mai_onsn.trisona.theme.LocalAppTheme
+import mai_onsyn.trisona.core.TrisonaKotlinInterface
+import mai_onsyn.trisona.core.TrisonaKotlinInterface.artistSQL
+import mai_onsyn.trisona.core.TrisonaKotlinInterface.audioSQL
+import mai_onsyn.trisona.core.TrisonaKotlinInterface.musicSQL
 import mai_onsyn.trisona.core.TrisonaKotlinInterface.player
-import mai_onsyn.trisona.core.message.MusicMessage
+import mai_onsyn.trisona.core.format
+import mai_onsyn.trisona.core.log
+import mai_onsyn.trisona.core.message.Music
 import org.jetbrains.skiko.Cursor
 import kotlin.math.PI
 
@@ -63,7 +69,7 @@ fun PlayBar(
         ) {
 
             PlayModeSwitch(
-                modifier = Modifier.size(genericButtonSize),
+                size = genericButtonSize,
             )
 
             //后退
@@ -119,7 +125,8 @@ fun PlayBar(
 
             VolumeButton(
                 modifier = Modifier
-                    .size(genericButtonSize)
+                    .size(genericButtonSize),
+                width = genericButtonSize
             )
         }
 
@@ -148,7 +155,7 @@ fun PlayBar(
             modifier = Modifier
                 .align(Alignment.BottomCenter)
                 .padding(bottom = 12.dp)
-                .padding(horizontal = 150.dp - animateScaleRadius)
+                .padding(horizontal = 200.dp - animateScaleRadius)
                 .height(progressHeight + 8.dp)
         ) {
             Text(
@@ -196,19 +203,21 @@ fun PlayBar(
         }
 
         //播放信息/封面
-        val emptyMusic = MusicMessage()
-        var currentMusic by remember { mutableStateOf(MusicMessage()) }
-        LaunchedEffect(player) {
-            currentMusic = player.currentMusic?: emptyMusic
+        val emptyMusic = Music()
+        val currentMusic by produceState(initialValue = emptyMusic, key1 = player.currentMusic) {
+            val musicID = player.currentMusic?.id ?: emptyMusic.id
+            log.debug("switched to id: {}, music: {}", musicID, player.currentMusic)
+            val result = musicSQL.query(musicID, audioSQL, artistSQL) ?: emptyMusic
+            value = result
         }
         PlayInfo(
             modifier = Modifier
                 .fillMaxHeight()
-                .width(100.dp)
+                .width(220.dp)
                 .padding(vertical = 10.dp)
                 .padding(start = 20.dp)
                 .align(Alignment.CenterStart),
-            musicMessage = currentMusic
+            music = currentMusic
         )
     }
 }

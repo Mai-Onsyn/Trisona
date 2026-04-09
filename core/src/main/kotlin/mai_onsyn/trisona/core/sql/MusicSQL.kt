@@ -5,7 +5,7 @@ import mai_onsyn.trisona.Global
 import mai_onsyn.trisona.core.data.MusicQuality
 import mai_onsyn.trisona.core.log
 import mai_onsyn.trisona.core.message.Artist
-import mai_onsyn.trisona.core.message.MusicMessage
+import mai_onsyn.trisona.core.message.Music
 import mai_onsyn.trisona.core.message.UniversalPath
 import java.util.ArrayList
 
@@ -42,7 +42,9 @@ class MusicSQL(instance: SQLInstance): SQLOperator(instance) {
         """.trimIndent())
     }
 
-    fun storage(mMsg: MusicMessage, audioSQL: AudioSQL, artistSQL: ArtistSQL) {
+    fun storage(mMsg: Music, sqls: SQLPackage) {
+        val audioSQL = sqls.audioSQL
+        val artistSQL = sqls.artistSQL
         if (mMsg.id == -1L) {
             log.error("MusicMessage id has not been initialized, title ${mMsg.title}")
             return
@@ -74,17 +76,17 @@ class MusicSQL(instance: SQLInstance): SQLOperator(instance) {
                 val qid = queryLong(id, "q_${quality.id}")?: Global.RANDOM.nextLong(0, Long.MAX_VALUE)
                 insert(TABLE_NAME, id, "q_${quality.id}", qid)
 //                println(quality)
-                audioSQL.storage(qid, id, pack.completeAMsg)
+                audioSQL.storage(qid, id, pack.completeAudioInfo)
             }
 
             artists.forEach { artistSQL.storage(it) }
         }
     }
 
-    fun query(id: Long, audioSQL: AudioSQL, artistSQL: ArtistSQL): MusicMessage? {
+    fun query(id: Long, audioSQL: AudioSQL, artistSQL: ArtistSQL): Music? {
         if (!contains(id)) return null
 
-        return MusicMessage().apply {
+        return Music().apply {
             this.id = id
             audioPath = UniversalPath().apply {
                 netWorkUrl = queryString(id, "net_path")?: ""
@@ -123,7 +125,7 @@ class MusicSQL(instance: SQLInstance): SQLOperator(instance) {
             ).forEach { (t, u) ->
 //                println(queryLong(id, t))
                 if (audioSQL.contains(queryLong(id, t)?: -1)) {
-                    allAudioMessages[u] = MusicMessage.AudioMessagePackage(audioSQL.query(queryLong(id, t) ?: -1))
+                    allAudioMessages[u] = Music.AudioMessagePackage(audioSQL.query(queryLong(id, t) ?: -1))
                 }
             }
         }

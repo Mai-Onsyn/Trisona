@@ -40,7 +40,7 @@ fun JImage(
         }
         isLoading = true
         withContext(Dispatchers.IO) {
-            val bufferedImage = ImageLoader.fromURLSync(url)
+            val bufferedImage = ImageLoader.fromSync(url)
             bitmap = bufferedImage?.toComposeImageBitmap()
             isLoading = false
         }

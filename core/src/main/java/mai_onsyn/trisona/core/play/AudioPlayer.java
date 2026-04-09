@@ -2,15 +2,15 @@ package mai_onsyn.trisona.core.play;
 
 import mai_onsyn.trisona.core.decoder.DecodeHandler;
 import mai_onsyn.trisona.core.decoder.RingBuffer;
-import mai_onsyn.trisona.core.message.AudioMessage;
-import mai_onsyn.trisona.core.message.MusicMessage;
+import mai_onsyn.trisona.core.message.Audio;
+import mai_onsyn.trisona.core.message.Music;
 
 public abstract class AudioPlayer {
     protected final RingBuffer ringBuffer;
     protected final DecodeHandler decoder;
     protected final byte[] chunkBuffer;
 
-    protected MusicMessage musicMessage;
+    protected Music music;
     protected double progressMillis; // in milliseconds
     protected boolean isPlaying;
     protected Runnable onMusicEnd;
@@ -28,8 +28,8 @@ public abstract class AudioPlayer {
         return isPlaying;
     }
 
-    public MusicMessage getMusicMessage() throws AudioPlayException {
-        return musicMessage;
+    public Music getMusicMessage() throws AudioPlayException {
+        return music;
     }
 
     public double getProgressMillis() throws AudioPlayException {
@@ -44,7 +44,7 @@ public abstract class AudioPlayer {
 
     public abstract void pause() throws AudioPlayException;
 
-    public abstract void setMusic(MusicMessage musicMessage) throws AudioPlayException;
+    public abstract void setMusic(Music music) throws AudioPlayException;
 
     public abstract void seek(int positionMillis) throws AudioPlayException;
 
@@ -58,7 +58,7 @@ public abstract class AudioPlayer {
         return volume;
     }
 
-    public AudioMessage getPlayingAudioMessage() {
+    public Audio getPlayingAudioMessage() {
         return decoder.getAudioMessage();
     }
 }

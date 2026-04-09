@@ -2,7 +2,7 @@ package mai_onsyn.trisona.core.message;
 
 import javax.sound.sampled.AudioFormat;
 
-public class AudioMessage extends Message {
+public class Audio extends Message {
     public enum Encoding {
         MP3, WAV, FLAC, OGG, M4A, UNKNOWN
     }
@@ -17,9 +17,9 @@ public class AudioMessage extends Message {
     public double gain = 0;
     public boolean signed = true;
 
-    public AudioMessage() {}
+    public Audio() {}
 
-    public AudioMessage(AudioFormat format) {
+    public Audio(AudioFormat format) {
         AudioFormat.Encoding formatEncoding = format.getEncoding();
         if (formatEncoding == javax.sound.sampled.AudioFormat.Encoding.PCM_SIGNED) {
             encoding = Encoding.WAV;
@@ -38,9 +38,9 @@ public class AudioMessage extends Message {
         return channels * sampleRate * bitDepth / 8;
     }
 
-    public AudioMessage merge(AudioMessage other) {
+    public Audio merge(Audio other) {
         if (other == null) return this;
-        AudioMessage merged = new AudioMessage();
+        Audio merged = new Audio();
 
         merged.pcmByteLength = this.pcmByteLength != -1 ? this.pcmByteLength : other.pcmByteLength;
         merged.fileByteLength = this.fileByteLength != -1 ? this.fileByteLength : other.fileByteLength;
@@ -59,7 +59,7 @@ public class AudioMessage extends Message {
     @Override
     public String toString() {
         return String.format(
-                "AudioMessage{pcmByteLength=%d, fileByteLength=%d, channels=%d, sampleRate=%d, bitDepth=%d, bitRate=%d, encoding=%s, signed=%b, gain=%f}",
+                "Audio{pcmByteLength=%d, fileByteLength=%d, channels=%d, sampleRate=%d, bitDepth=%d, bitRate=%d, encoding=%s, signed=%b, gain=%f}",
                 pcmByteLength, fileByteLength, channels, sampleRate, bitDepth, bitRate, encoding, signed, gain
         );
     }

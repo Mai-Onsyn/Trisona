@@ -1,19 +1,19 @@
 package mai_onsyn.trisona.core.play;
 
-import mai_onsyn.trisona.core.message.MusicMessage;
-import mai_onsyn.trisona.core.message.PlayListMessage;
+import mai_onsyn.trisona.core.message.Music;
+import mai_onsyn.trisona.core.message.PlayListInfo;
 
 import java.util.ArrayList;
 
-public class PlayList extends ArrayList<MusicMessage> {
-    private final PlayListMessage info;
+public class PlayList extends ArrayList<Music> {
+    private final PlayListInfo info;
     protected int playingIndex = -1;
 
-    public PlayList(PlayListMessage info) {
+    public PlayList(PlayListInfo info) {
         this.info = info;
     }
 
-    public MusicMessage play(int index) {
+    public Music play(int index) {
         if (index < 0 || index >= size())
             throw new IndexOutOfBoundsException("Index: " + index + ", Size: " + size());
 
@@ -29,7 +29,7 @@ public class PlayList extends ArrayList<MusicMessage> {
         playingIndex = index;
     }
 
-    public PlayListMessage getInfo() {
+    public PlayListInfo getInfo() {
         return info;
     }
 }

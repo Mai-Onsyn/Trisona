@@ -1,7 +1,7 @@
 package mai_onsyn.trisona.core.play;
 
-import mai_onsyn.trisona.core.message.AudioMessage;
-import mai_onsyn.trisona.core.message.MusicMessage;
+import mai_onsyn.trisona.core.message.Audio;
+import mai_onsyn.trisona.core.message.Music;
 import mai_onsyn.trisona.core.utils.MusicCallback;
 
 public class TrisonaPlayer {
@@ -13,7 +13,7 @@ public class TrisonaPlayer {
     private MusicCallback onMusicEnd;
     private MusicCallback onMusicStart;
 
-    private MusicMessage currentMusic;
+    private Music currentMusic;
 
     public TrisonaPlayer(String platform) {
         switch (platform) {
@@ -40,7 +40,7 @@ public class TrisonaPlayer {
     }
 
     public void next() {
-        MusicMessage next = queue.next();
+        Music next = queue.next();
         if (next == null) {
             if (onQueueEnd != null) onQueueEnd.run(currentMusic);
             return;
@@ -52,7 +52,7 @@ public class TrisonaPlayer {
     }
 
     public void previous() {
-        MusicMessage previous = queue.previous();
+        Music previous = queue.previous();
         if (previous == null) {
             return;
         }
@@ -75,11 +75,12 @@ public class TrisonaPlayer {
     }
 
     public void specifyMusic(int index) {
-        MusicMessage music = queue.specify(index);
+        Music music = queue.specify(index);
         if (music == null) {
             return;
         }
         player.setMusic(music);
+        currentMusic = music;
         if (onMusicStart != null) onMusicStart.run(music);
     }
 
@@ -92,15 +93,14 @@ public class TrisonaPlayer {
     }
 
     public float getPlayingDuration() {
-        AudioMessage msg = player.getPlayingAudioMessage();
+        Audio msg = player.getPlayingAudioMessage();
         if (msg == null) {
             return 1f;
         }
-
         return (float) msg.pcmByteLength / msg.getBPS() * 1000f;
     }
 
-    public MusicMessage getCurrentMusic() {
+    public Music getCurrentMusic() {
         return currentMusic;
     }
 

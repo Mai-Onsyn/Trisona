@@ -1,13 +1,13 @@
 package mai_onsyn.trisona.core.decoder;
 
-import mai_onsyn.trisona.core.message.AudioMessage;
+import mai_onsyn.trisona.core.message.Audio;
 
 import java.io.DataInputStream;
 import java.io.IOException;
 
 public class OggDecoder extends AudioDecoder {
     @Override
-    AudioMessage readyAudioStream(DataInputStream is, long streamSize, StreamReadyRef readyRef) throws IOException {
+    Audio readyAudioStream(DataInputStream is, long streamSize, StreamReadyRef readyRef) throws IOException {
         return null;
     }
 
@@ -17,7 +17,7 @@ public class OggDecoder extends AudioDecoder {
     }
 
     @Override
-    DataInputStream decode(DataInputStream is, AudioMessage sourceInfo) throws IOException {
+    DataInputStream decode(DataInputStream is, Audio sourceInfo) throws IOException {
         return null;
     }
 

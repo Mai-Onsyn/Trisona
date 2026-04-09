@@ -14,6 +14,7 @@ fun Modifier.interaction(
     onHoverEnter: PointerInputScope.(PointerEvent) -> Unit = {},
     onHoverExit: PointerInputScope.(PointerEvent) -> Unit = {},
     onDrag: PointerInputScope.(PointerEvent) -> Unit = {},
+    onMove: PointerInputScope.(PointerEvent) -> Unit = {},
     onHoveredChange: (Boolean) -> Unit = {},
     onPressedChange: (Boolean) -> Unit = {},
     pass: PointerEventPass = PointerEventPass.Initial
@@ -51,6 +52,10 @@ fun Modifier.interaction(
                         onPressedChange(true)
                     }
                     isPressedNow = true
+                }
+
+                PointerEventType.Move -> {
+                    onMove(event)
                 }
 
                 // 鼠标/手指松开

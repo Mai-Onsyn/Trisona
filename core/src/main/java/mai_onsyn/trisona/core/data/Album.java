@@ -1,11 +1,9 @@
 package mai_onsyn.trisona.core.data;
 
-import mai_onsyn.trisona.core.message.MusicMessage;
 import mai_onsyn.trisona.core.message.UniversalPath;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.stream.Collectors;
 
 public class Album extends ArrayList<Long> {
     private long id = -1;

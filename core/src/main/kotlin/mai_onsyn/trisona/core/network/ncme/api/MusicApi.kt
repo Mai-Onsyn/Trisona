@@ -8,14 +8,14 @@ import mai_onsyn.trisona.core.data.Album
 import mai_onsyn.trisona.core.data.MusicQuality
 import mai_onsyn.trisona.core.log
 import mai_onsyn.trisona.core.message.Artist
-import mai_onsyn.trisona.core.message.AudioMessage
-import mai_onsyn.trisona.core.message.MusicMessage
+import mai_onsyn.trisona.core.message.Audio
+import mai_onsyn.trisona.core.message.Music
 import mai_onsyn.trisona.core.network.ncme.base.NCMApiService
 
 class MusicApi(val client: NCMApiService) {
     data class IdUrlResponse(
         val url: String,
-        val info: MusicMessage?
+        val info: Music?
     )
     fun getNetEaseUrl(id: Long, level: MusicQuality): IdUrlResponse = runBlocking {
         val params = mapOf(
@@ -28,21 +28,21 @@ class MusicApi(val client: NCMApiService) {
         val url = json.optString("$.data[0].url").orEmpty()
         if (url.isEmpty()) return@runBlocking IdUrlResponse("", null)
 
-        val mMsg = MusicMessage()
+        val mMsg = Music()
         mMsg.id = id
         mMsg.audioPath.setNetWorkUrl(url)
         mMsg.duration = json.optString("$.data[0].time")?.toIntOrNull()?: -1
         mMsg.enableQuality(level)
 
-        val aMsg = AudioMessage()
+        val aMsg = Audio()
         aMsg.encoding = when(
             json.optString("$.data[0].encodeType").orEmpty()
         ) {
-            "mp3" -> AudioMessage.Encoding.MP3
-            "flac" -> AudioMessage.Encoding.FLAC
+            "mp3" -> Audio.Encoding.MP3
+            "flac" -> Audio.Encoding.FLAC
             else -> {
                 log.warn("Unknown encoding: ${json.optString("$.data[0].encodeType")}")
-                AudioMessage.Encoding.UNKNOWN
+                Audio.Encoding.UNKNOWN
             }
         }
         aMsg.bitRate = json.optString("$.data[0].br")?.toIntOrNull()?: -1
@@ -50,15 +50,15 @@ class MusicApi(val client: NCMApiService) {
         aMsg.gain = json.optString("$.data[0].gain")?.toDoubleOrNull()?: 0.0
         aMsg.sampleRate = json.optString("$.data[0].sr")?.toIntOrNull()?: -1
 
-        mMsg.setaMsgNetwork(aMsg)
+        mMsg.setAudioNetwork(aMsg)
         IdUrlResponse(url, mMsg)
     }
 
-    fun getNetEaseMusicDetail(id: Long, album: Album): MusicMessage = runBlocking {
+    fun getNetEaseMusicDetail(id: Long, album: Album): Music = runBlocking {
         val json = client.requestJson("/song/detail", mapOf("ids" to id.toString()))
-        val mMsg = MusicMessage()
+        val mMsg = Music()
         val song = json.optJSONObject("$.songs[0]")?: return@runBlocking mMsg
-        val aMsgMap = mutableMapOf<MusicQuality, AudioMessage>()
+        val aMsgMap = mutableMapOf<MusicQuality, Audio>()
 
         mapOf(
             "hr" to MusicQuality.HI_RES,
@@ -68,7 +68,7 @@ class MusicApi(val client: NCMApiService) {
             "l"  to MusicQuality.STANDARD
         ).forEach { (apiKey, qualityEnum) ->
             song.getJSONObject(apiKey)?.let {
-                aMsgMap[qualityEnum] = AudioMessage().apply {
+                aMsgMap[qualityEnum] = Audio().apply {
                     bitRate = it.getString("br")?.toIntOrNull()?: -1
                     fileByteLength = it.getString("size")?.toLongOrNull()?: -1
                     sampleRate = it.getString("sr")?.toIntOrNull()?: -1

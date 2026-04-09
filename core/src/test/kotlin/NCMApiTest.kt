@@ -3,6 +3,7 @@ import mai_onsyn.trisona.core.TrisonaKotlinInterface.albumSQL
 import mai_onsyn.trisona.core.TrisonaKotlinInterface.artistSQL
 import mai_onsyn.trisona.core.TrisonaKotlinInterface.audioSQL
 import mai_onsyn.trisona.core.TrisonaKotlinInterface.musicSQL
+import mai_onsyn.trisona.core.TrisonaKotlinInterface.sql
 import mai_onsyn.trisona.core.data.Album
 import mai_onsyn.trisona.core.data.MusicQuality
 import mai_onsyn.trisona.core.network.common.API
@@ -17,8 +18,8 @@ fun main() {
     API.client.close()
 
     albumSQL.storage(album)
-    musicSQL.storage(ref1.info!!, audioSQL, artistSQL)
-    musicSQL.storage(ref2, audioSQL, artistSQL)
+    musicSQL.storage(ref1.info!!, sql)
+    musicSQL.storage(ref2, sql)
 
 //    Thread.sleep(3000)
     SQL_INSTANCE.printAllTables()

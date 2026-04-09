@@ -1,7 +1,7 @@
 package mai_onsyn.trisona.core.utils;
 
-import mai_onsyn.trisona.core.message.MusicMessage;
+import mai_onsyn.trisona.core.message.Music;
 
 public interface MusicCallback {
-    void run(MusicMessage music);
+    void run(Music music);
 }

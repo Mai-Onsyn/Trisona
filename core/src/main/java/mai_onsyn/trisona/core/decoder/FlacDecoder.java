@@ -1,6 +1,6 @@
 package mai_onsyn.trisona.core.decoder;
 
-import mai_onsyn.trisona.core.message.AudioMessage;
+import mai_onsyn.trisona.core.message.Audio;
 import org.jspecify.annotations.NonNull;
 import org.kc7bfi.jflac.FLACDecoder;
 import org.kc7bfi.jflac.PCMProcessor;
@@ -18,12 +18,12 @@ import static mai_onsyn.trisona.Global.SYSTEM_AUDIO_FORMAT;
 
 public class FlacDecoder extends AudioDecoder {
     @Override
-    AudioMessage readyAudioStream(DataInputStream is, long streamSize, StreamReadyRef readyRef) throws IOException {
+    Audio readyAudioStream(DataInputStream is, long streamSize, StreamReadyRef readyRef) throws IOException {
 
         FlacToPcmInputStream pcmStream = new FlacToPcmInputStream(is);
 
         try {
-            AudioMessage info = pcmStream.waitForInfo();
+            Audio info = pcmStream.waitForInfo();
 
             readyRef.invoke(new DataInputStream(pcmStream));
 
@@ -35,12 +35,12 @@ public class FlacDecoder extends AudioDecoder {
     }
 
     @Override
-    DataInputStream decode(DataInputStream is, AudioMessage sourceInfo) throws IOException {
+    DataInputStream decode(DataInputStream is, Audio sourceInfo) throws IOException {
         return DecodeUtil.wavRedecode(is, sourceInfo, SYSTEM_AUDIO_FORMAT);
     }
 
     private static class FlacToPcmInputStream extends InputStream {
-        private AudioMessage info;
+        private Audio info;
         private final Object lock = new Object(); // 唯一的通信锁
 
         private byte[] currentBuffer;
@@ -49,9 +49,9 @@ public class FlacDecoder extends AudioDecoder {
         private boolean isEnded = false;
         private boolean dataReady = false; // 状态标记
 
-        private final CompletableFuture<AudioMessage> infoFuture = new CompletableFuture<>();
+        private final CompletableFuture<Audio> infoFuture = new CompletableFuture<>();
 
-        public AudioMessage waitForInfo() throws ExecutionException, InterruptedException {
+        public Audio waitForInfo() throws ExecutionException, InterruptedException {
             return infoFuture.get();
         }
 
@@ -60,13 +60,13 @@ public class FlacDecoder extends AudioDecoder {
             decoder.addPCMProcessor(new PCMProcessor() {
                 @Override
                 public void processStreamInfo(StreamInfo streamInfo) {
-                    if (info == null) info = new AudioMessage();
+                    if (info == null) info = new Audio();
                     info.sampleRate = streamInfo.getSampleRate();
                     info.bitDepth = streamInfo.getBitsPerSample();
                     info.channels = streamInfo.getChannels();
                     // 既然你固定了播放格式，这里用 4L 是没问题的
                     info.pcmByteLength = streamInfo.getTotalSamples() * 4L;
-                    info.encoding = AudioMessage.Encoding.FLAC;
+                    info.encoding = Audio.Encoding.FLAC;
                     info.signed = true;
                     infoFuture.complete(info);
                 }

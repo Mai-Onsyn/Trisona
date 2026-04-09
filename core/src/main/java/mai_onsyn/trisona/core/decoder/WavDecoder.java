@@ -1,7 +1,7 @@
 package mai_onsyn.trisona.core.decoder;
 
 import mai_onsyn.trisona.Global;
-import mai_onsyn.trisona.core.message.AudioMessage;
+import mai_onsyn.trisona.core.message.Audio;
 
 import java.io.DataInputStream;
 import java.io.IOException;
@@ -14,7 +14,7 @@ public class WavDecoder extends AudioDecoder {
     private final byte[] byte2Buffer = new byte[2];
 
     @Override
-    AudioMessage readyAudioStream(DataInputStream is, long streamSize, StreamReadyRef readyRef) throws IOException {
+    Audio readyAudioStream(DataInputStream is, long streamSize, StreamReadyRef readyRef) throws IOException {
         if (!(is.read(byte4Buffer) == 4 &&
                 new String(byte4Buffer).equals("RIFF"))) {
             throw new AudioDecodeException(NOT_A_WAV_FILE);
@@ -27,7 +27,7 @@ public class WavDecoder extends AudioDecoder {
             throw new AudioDecodeException(NOT_A_WAV_FILE);
         }
 
-        AudioMessage info = new AudioMessage();
+        Audio info = new Audio();
         while (is.available() > 0) {
             if (is.read(byte4Buffer) != 4) break;
 
@@ -46,7 +46,7 @@ public class WavDecoder extends AudioDecoder {
                     if (is.skip(chunkSize - 16) != chunkSize - 16)
                         throw new AudioDecodeException(WAV_WAS_DESTROYED);
 
-                info.encoding = AudioMessage.Encoding.WAV;
+                info.encoding = Audio.Encoding.WAV;
             } else if (chunkID.equals("data")) {
                 info.pcmByteLength = chunkSize / info.channels / (info.bitDepth / 8) * 4L;
                 return info;
@@ -58,7 +58,7 @@ public class WavDecoder extends AudioDecoder {
     }
 
     @Override
-    DataInputStream decode(DataInputStream is, AudioMessage sourceInfo) throws IOException {
+    DataInputStream decode(DataInputStream is, Audio sourceInfo) throws IOException {
         return DecodeUtil.wavRedecode(is, sourceInfo, Global.SYSTEM_AUDIO_FORMAT);
     }
 
