@@ -5,5 +5,5 @@ data class SQLPackage(
     val audioSQL: AudioSQL,
     val artistSQL: ArtistSQL,
     val albumSQL: AlbumSQL,
-) {
-}
+    val playListSQL: PlayListSQL
+)

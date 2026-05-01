@@ -26,8 +26,9 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import mai_onsn.trisona.JImage
 import mai_onsn.trisona.theme.cardPath
-import mai_onsn.trisona.module.util.interaction
+import mai_onsn.trisona.util.interaction
 import mai_onsn.trisona.theme.LocalAppTheme
+import mai_onsn.trisona.util.ClickableScaleButtonEffect
 import kotlin.math.PI
 
 @Composable
@@ -38,78 +39,82 @@ fun AlbumCard(
     onClick: () -> Unit = {},
     modifier: Modifier = Modifier
 ) {
-    Column(
-        modifier = modifier
-            .albumCardInteractionEffect(onClick)
-            .shadow(
-                elevation = 4.dp,
-                ambientColor = LocalAppTheme.current.backGroundShadow.copy(alpha = 0.3f),
-                spotColor = LocalAppTheme.current.backGroundShadow.copy(alpha = 0.5f),
-                shape = CardShape
-            )
-            .width(120.dp)
-            .height(180.dp)
-
-            .clip(CardShape)
-            .background(LocalAppTheme.current.albumCardBase)
+    ClickableScaleButtonEffect(
+        onClick = onClick,
     ) {
-        JImage(
-            url = coverUrl,
-            modifier = Modifier
-                .aspectRatio(1f)
-                .fillMaxWidth()
-                .clip(RoundedCornerShape(4.dp)),
-            contentScale = ContentScale.Crop,
-
-            loadingPlaceholder = {
-                Box(
-                    modifier = Modifier
-                        .background(Color.LightGray)
-                        .aspectRatio(1f)
-                        .fillMaxSize()
-                ) {
-                    Text(
-                        modifier = Modifier.align(Alignment.Center),
-                        text = "Loading...",
-                    )
-                }
-            },
-
-            errorPlaceholder = {
-                Box(
-                    modifier = Modifier
-                        .background(Color.LightGray)
-                        .aspectRatio(1f)
-                        .fillMaxSize()
-                ) {
-                    Text(
-                        modifier = Modifier.align(Alignment.Center),
-                        text = "Load Failed",
-                    )
-                }
-            }
-        )
-
         Column(
-            modifier = Modifier.padding(8.dp)
+            modifier = modifier
+//            .albumCardInteractionEffect(onClick)
+                .shadow(
+                    elevation = 4.dp,
+                    ambientColor = LocalAppTheme.current.backGroundShadow.copy(alpha = 0.3f),
+                    spotColor = LocalAppTheme.current.backGroundShadow.copy(alpha = 0.5f),
+                    shape = CardShape
+                )
+                .width(114.dp)
+                .height(168.dp)
+
+                .clip(CardShape)
+                .background(LocalAppTheme.current.albumCardBase)
         ) {
-            Text(
-                text = title,
-                color = LocalAppTheme.current.textBaseColor,
-                fontSize = 14.sp,
-                maxLines = 1,
-                overflow = TextOverflow.Ellipsis
+            JImage(
+                url = coverUrl,
+                modifier = Modifier
+                    .aspectRatio(1f)
+                    .fillMaxWidth()
+                    .clip(RoundedCornerShape(4.dp)),
+                contentScale = ContentScale.Crop,
+
+                loadingPlaceholder = {
+                    Box(
+                        modifier = Modifier
+                            .background(Color.LightGray)
+                            .aspectRatio(1f)
+                            .fillMaxSize()
+                    ) {
+                        Text(
+                            modifier = Modifier.align(Alignment.Center),
+                            text = "Loading...",
+                        )
+                    }
+                },
+
+                errorPlaceholder = {
+                    Box(
+                        modifier = Modifier
+                            .background(Color.LightGray)
+                            .aspectRatio(1f)
+                            .fillMaxSize()
+                    ) {
+                        Text(
+                            modifier = Modifier.align(Alignment.Center),
+                            text = "Load Failed",
+                        )
+                    }
+                }
             )
 
-            Text(
-                text = artist,
+            Column(
+                modifier = Modifier.padding(8.dp)
+            ) {
+                Text(
+                    text = title,
+                    color = LocalAppTheme.current.textBaseColor,
+                    fontSize = 14.sp,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis
+                )
+
+                Text(
+                    text = artist,
 //                color = LocalAppTheme.current.textBaseColor,
-                fontSize = 10.sp,
-                maxLines = 1,
-                color = Color.Gray
-            )
-        }
+                    fontSize = 10.sp,
+                    maxLines = 1,
+                    color = Color.Gray
+                )
+            }
 
+        }
     }
 }
 

@@ -6,8 +6,7 @@ import mai_onsyn.trisona.core.data.User;
 public class PlayListInfo extends Message {
 
     public String name;
-    public User creator;
+    public String creator;
     public Date createDate;
     public UniversalPath coverPath;
-
 }

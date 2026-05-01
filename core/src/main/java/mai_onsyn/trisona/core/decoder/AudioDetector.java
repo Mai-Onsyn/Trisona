@@ -72,17 +72,19 @@ public class AudioDetector {
             String artistName = tag.getFirst(FieldKey.ARTIST).trim();
             mmsg.artists.add(new Artist(HashUtil.stringToNegativeLong(artistName), artistName));
             String albumName = tag.getFirst(FieldKey.ALBUM).trim();
-            mmsg.albumID = HashUtil.stringToNegativeLong(albumName);
             mmsg.duration = (int) (audioHeader.getPreciseTrackLength() * 1000);
             mmsg.audioPath.setNativePath(file.getAbsolutePath());
 
             if (mmsg.title == null || mmsg.title.isEmpty())
                 mmsg.title = file.getName();
-            mmsg.id = HashUtil.stringToNegativeLong(mmsg.title);
+            mmsg.id = HashUtil.stringToNegativeLong(mmsg.title + mmsg.artists.getFirst().getName());
 
-            album.setId(mmsg.albumID);
-            album.setName(albumName);
-            album.add(mmsg.id);
+            if (!albumName.isEmpty()) {
+                mmsg.albumID = HashUtil.stringToNegativeLong(albumName);
+                album.setId(mmsg.albumID);
+                album.setName(albumName);
+                album.add(mmsg.id);
+            }
 
             Artwork artwork = tag.getFirstArtwork();
             if (artwork != null) {

@@ -1,4 +1,4 @@
-package mai_onsn.trisona.module.util
+package mai_onsn.trisona.util
 
 import androidx.compose.animation.core.LinearOutSlowInEasing
 import androidx.compose.animation.core.tween

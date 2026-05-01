@@ -3,6 +3,7 @@ package mai_onsn.trisona
 import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.*
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -14,13 +15,17 @@ import androidx.compose.ui.unit.dp
 import mai_onsn.trisona.module.AlbumCard
 import mai_onsn.trisona.module.play_bar.PlayBar
 import mai_onsn.trisona.module.SearchInput
+import mai_onsn.trisona.module.content.ContentBox
+import mai_onsn.trisona.module.guid_bar.GuidBox
+import mai_onsn.trisona.module.guid_bar.GuidPage
 import mai_onsn.trisona.module.layout.BackGround
 import mai_onsn.trisona.module.layout.TitleBackBar
-import mai_onsn.trisona.module.util.ClickableScaleButtonEffect
-import mai_onsn.trisona.module.util.interaction
+import mai_onsn.trisona.util.ClickableScaleButtonEffect
+import mai_onsn.trisona.util.interaction
 import mai_onsn.trisona.theme.DarkColorTheme
 import mai_onsn.trisona.theme.LightColorTheme
 import mai_onsn.trisona.theme.ThemeInterface
+import mai_onsn.trisona.util.ClickableRoundIconButtonScaleEffect
 
 @Preview
 @Composable
@@ -30,7 +35,6 @@ fun App() {
         val focusManager = LocalFocusManager.current
         BackGround (
             modifier = Modifier
-//                .pointerInput(Unit) {}
                 .pointerInput(Unit) {
                     detectTapGestures {
                         focusManager.clearFocus()
@@ -44,42 +48,51 @@ fun App() {
                     .fillMaxWidth()
                     .align(Alignment.TopCenter)
             ) { titleBarComponents() }
-            //main album area
-            Box(
+
+            ContentBox(
+                page = GuidPage.CREATES,
                 modifier = Modifier
                     .fillMaxSize()
                     .padding(
-                        start = 20.dp,
-                        end = 20.dp,
-                        top = 150.dp,
-                        bottom = 20.dp
-                    )
-            ) {
-                Row {
-                    AlbumCard(
-//                        coverUrl = "https://p1.music.126.net/3RANMlMM-udSsHyInyVbrQ==/528865105234307.jpg?param=140y140",
-                        onClick = {
-                            Config.isDarkMode = !Config.isDarkMode
-                            println("album card clicked")
-                        }
-                    )
+                        start = 120.dp,
+                        end = 50.dp,
+                        top = 80.dp,
+                        bottom = 80.dp
+                    ),
+            )
 
-                    Spacer(Modifier.width(16.dp))
+            GuidBox(
+                modifier = Modifier
+                    .width(100.dp)
+                    .height(500.dp)
+                    .align(Alignment.CenterStart)
+            )
 
-                    AlbumCard()
-
-                    ClickableScaleButtonEffect {
-                        Box(
-                            modifier = Modifier
-                                .size(80.dp)
-                                .interaction(
-                                    onClick = { println("test") }
-                                )
-                                .background(Color.Yellow)
-                        )
-                    }
-                }
-            }
+            //main album area
+//            Box(
+//                modifier = Modifier
+//                    .fillMaxSize()
+//                    .padding(
+//                        start = 200.dp,
+//                        end = 20.dp,
+//                        top = 150.dp,
+//                        bottom = 20.dp
+//                    )
+//            ) {
+//                Row {
+//                    AlbumCard(
+////                        coverUrl = "https://p1.music.126.net/3RANMlMM-udSsHyInyVbrQ==/528865105234307.jpg?param=140y140",
+//                        onClick = {
+//                            Config.isDarkMode = !Config.isDarkMode
+//                            println("album card clicked")
+//                        }
+//                    )
+//
+//                    Spacer(Modifier.width(16.dp))
+//
+//                    AlbumCard()
+//                }
+//            }
 
             PlayBar(
                 modifier = Modifier
@@ -100,4 +113,16 @@ fun BoxScope.titleBarComponents() {
             .width(300.dp)
             .fillMaxHeight()
     )
+
+    ClickableRoundIconButtonScaleEffect(
+        modifier = Modifier
+            .padding(end = 20.dp)
+            .align(Alignment.CenterEnd)
+            .size(40.dp),
+        onClick = { Config.isDarkMode = !Config.isDarkMode }
+    ) {
+        Text(
+            text = "D"
+        )
+    }
 }

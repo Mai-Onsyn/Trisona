@@ -1,4 +1,4 @@
-package mai_onsn.trisona.module.util
+package mai_onsn.trisona.util
 
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.pointer.PointerEvent
@@ -11,10 +11,12 @@ fun Modifier.interaction(
     onPress: PointerInputScope.(PointerEvent) -> Unit = {},
     onRelease: PointerInputScope.(PointerEvent) -> Unit = {},
     onClick: PointerInputScope.(PointerEvent) -> Unit = {},
+    onDoubleClick: PointerInputScope.(PointerEvent) -> Unit = {},
     onHoverEnter: PointerInputScope.(PointerEvent) -> Unit = {},
     onHoverExit: PointerInputScope.(PointerEvent) -> Unit = {},
     onDrag: PointerInputScope.(PointerEvent) -> Unit = {},
     onMove: PointerInputScope.(PointerEvent) -> Unit = {},
+    onScroll: PointerInputScope.(PointerEvent) -> Unit = {},
     onHoveredChange: (Boolean) -> Unit = {},
     onPressedChange: (Boolean) -> Unit = {},
     pass: PointerEventPass = PointerEventPass.Initial
@@ -23,6 +25,8 @@ fun Modifier.interaction(
 
         var isHoveredNow = false
         var isPressedNow = false
+
+        var lastClickTime = System.currentTimeMillis()
         while (true) {
             val event = awaitPointerEvent(pass)
 
@@ -58,6 +62,10 @@ fun Modifier.interaction(
                     onMove(event)
                 }
 
+                PointerEventType.Scroll -> {
+                    onScroll(event)
+                }
+
                 // 鼠标/手指松开
                 PointerEventType.Release -> {
                     if (isPressedNow) {
@@ -71,8 +79,10 @@ fun Modifier.interaction(
 
                         if (isWithinBounds) {
                             onClick(event)
-
-//                            event.changes.forEach { it.consume() }
+                            if (System.currentTimeMillis() - lastClickTime < 300) {
+                                onDoubleClick(event)
+                                lastClickTime = 0
+                            } else lastClickTime = System.currentTimeMillis()
                         }
                     }
                     isPressedNow = false

@@ -1,9 +1,7 @@
 package mai_onsn.trisona.module.play_bar
 
-import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.GenericShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Icon
@@ -14,21 +12,17 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Shape
-import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.compose.ui.window.Popup
 import kotlinx.coroutines.delay
 import mai_onsn.trisona.Config.playMode
 import mai_onsn.trisona.module.layout.PopupBox
-import mai_onsn.trisona.module.util.ClickableScaleButtonEffect
-import mai_onsn.trisona.module.util.interaction
-import mai_onsn.trisona.module.util.tweenSpecFloat
+import mai_onsn.trisona.util.ClickableScaleButtonEffect
 import mai_onsn.trisona.theme.LocalAppTheme
 import mai_onsn.trisona.theme.parallelogramPath
+import mai_onsn.trisona.util.ClickableRoundIconButtonScaleEffect
 import mai_onsyn.trisona.core.TrisonaKotlinInterface.player
-import mai_onsyn.trisona.core.play.PlayQueue
 import org.jetbrains.compose.resources.DrawableResource
 import org.jetbrains.compose.resources.painterResource
 import trisona.sharedui.generated.resources.Res
@@ -77,14 +71,17 @@ fun PlayModeSwitch(
         popupAlignment = Alignment.BottomEnd,
         interactionContentAlignment = Alignment.Center,
         interactionContent = {
-            Icon(
-                painter = painterResource(playModeIcon),
-                contentDescription = null,
-                tint = theme.controlIconFill,
+            ClickableRoundIconButtonScaleEffect(
                 modifier = Modifier
-                    .size(20.dp)
-//                    .align(Alignment.Center)
-            )
+                    .size(size)
+            ) {
+                Icon(
+                    painter = painterResource(playModeIcon),
+                    contentDescription = null,
+                    tint = theme.controlIconFill,
+                    modifier = Modifier.size(20.dp)
+                )
+            }
         }
     ) {
         Column(

@@ -46,7 +46,7 @@ class MusicSQL(instance: SQLInstance): SQLOperator(instance) {
         val audioSQL = sqls.audioSQL
         val artistSQL = sqls.artistSQL
         if (mMsg.id == -1L) {
-            log.error("MusicMessage id has not been initialized, title ${mMsg.title}")
+            log.error("Music id has not been initialized, title ${mMsg.title}")
             return
         }
         with(mMsg) {
@@ -95,12 +95,12 @@ class MusicSQL(instance: SQLInstance): SQLOperator(instance) {
             title = queryString(id, "title")
             alias = queryString(id, "alias")?.let {
                 JSONArray.parseArray(it).map { any -> any.toString() }
-            }?: ArrayList<String>()
+            }?: ArrayList()
             artists = queryString(id, "artists")?.let {
                 JSONArray.parseArray(it).map {
                     aID -> artistSQL.query(aID.toString().toLong())
                 }
-            }?: ArrayList<Artist>()
+            }?: ArrayList()
             albumID = queryLong(id, "album_id")?: -1
             popularity = queryDouble(id, "popularity")?: -1.0
             duration = queryInt(id, "duration")?: -1

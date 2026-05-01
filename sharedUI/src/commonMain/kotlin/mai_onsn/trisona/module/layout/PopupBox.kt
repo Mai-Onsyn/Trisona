@@ -3,9 +3,7 @@ package mai_onsn.trisona.module.layout
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.BoxWithConstraints
-import androidx.compose.foundation.layout.BoxWithConstraintsScope
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.width
@@ -16,6 +14,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -27,9 +26,14 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Popup
-import mai_onsn.trisona.module.util.interaction
-import mai_onsn.trisona.module.util.tweenSpecFloat
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
+import mai_onsn.trisona.util.interaction
+import mai_onsn.trisona.util.tweenSpecFloat
 import mai_onsn.trisona.theme.LocalAppTheme
+import mai_onsn.trisona.util.appShadow
+import kotlin.compareTo
 
 @Composable
 fun PopupBox(
@@ -39,6 +43,8 @@ fun PopupBox(
     maxHeight: Dp = Dp.Unspecified,
     minWidth: Dp = Dp.Unspecified,
     minHeight: Dp = Dp.Unspecified,
+    clickTrigger: Boolean = true,
+    triggerDelay: Long = 0,
     followCursor: Boolean = false,
     cursorOffset: IntOffset = IntOffset(0, 0),
     popupAlignment: Alignment = Alignment.BottomCenter,
@@ -51,55 +57,87 @@ fun PopupBox(
 
     var isHovered by remember { mutableStateOf(false) }
     var isPressed by remember { mutableStateOf(false) }
+    var showPopupAnimate by remember { mutableStateOf(false) }
     var showPopup by remember { mutableStateOf(false) }
 
     val popupShowProgress by animateFloatAsState(
-        targetValue = if (isHovered || isPressed) 1f else 0f,
+        targetValue = if (
+                if (clickTrigger) showPopupAnimate
+                else (isHovered || isPressed) && showPopup
+            ) 1f else 0f,
         animationSpec = tweenSpecFloat,
         finishedListener = {
             if (it == 0f) showPopup = false
         }
     )
 
+    val scope = rememberCoroutineScope()
+    var delayJob by remember { mutableStateOf<Job?>(null) }
+    fun schedulePopupShow() {
+        delayJob?.cancel()
+        if (triggerDelay <= 0) {
+            showPopupAnimate = true
+            showPopup = true
+        } else {
+            delayJob = scope.launch {
+                delay(triggerDelay)
+                showPopupAnimate = true
+                showPopup = true
+            }
+        }
+    }
+
     var mouseOffset by remember { mutableStateOf(IntOffset.Zero) }
 
     BoxWithConstraints(
         contentAlignment = interactionContentAlignment,
         modifier = modifier
-            .interaction(
-                onPressedChange = { isPressed = it },
-                onHoveredChange = { isHovered = it },
-                onHoverEnter = { showPopup = true },
-                onMove = {
-                    val offset = it.changes.first().position
-                    mouseOffset = IntOffset(offset.x.toInt(), offset.y.toInt())
-                },
+            .then(
+                if (clickTrigger) Modifier.interaction(
+                    onPressedChange = { isPressed = it },
+                    onHoveredChange = { isHovered = it },
+                    onClick = {
+                        schedulePopupShow()
+                    },
+                    onMove = {
+                        val offset = it.changes.first().position
+                        mouseOffset = IntOffset(offset.x.toInt(), offset.y.toInt())
+                    }
+                ) else Modifier.interaction(
+                    onPressedChange = { isPressed = it },
+                    onHoveredChange = { isHovered = it },
+                    onHoverEnter = {
+                        schedulePopupShow()
+                    },
+                    onHoverExit = {
+                        delayJob?.cancel()
+                    },
+                    onMove = {
+                        val offset = it.changes.first().position
+                        mouseOffset = IntOffset(offset.x.toInt(), offset.y.toInt())
+                    }
+                )
             )
     ) {
         interactionContent()
-
         if (showPopup) {
             Popup(
-                alignment = if (followCursor) Alignment.TopStart else popupAlignment,
+                alignment = if (followCursor) Alignment.BottomStart else popupAlignment,
                 offset = if (followCursor) {
                     IntOffset(
                         mouseOffset.x + cursorOffset.x,
                         mouseOffset.y + cursorOffset.y
                     )
                 } else IntOffset.Zero,
-                onDismissRequest = { showPopup = false },
+                onDismissRequest = { showPopupAnimate = false },
             ) {
                 Box(
                     contentAlignment = popupContentAlignment,
                     modifier = Modifier
-                        .graphicsLayer {
-                            alpha = popupShowProgress
-                            shadowElevation = 12.dp.toPx()
-                            shape = popupShape
-                            clip = false
-                            ambientShadowColor = theme.backGroundShadow.copy(0.3f)
-                            spotShadowColor = theme.backGroundShadow.copy(0.5f)
-                        }
+                        .appShadow(
+                            shadowShape = popupShape,
+                            opacity = popupShowProgress,
+                        )
                         .then(
                             if (maxWidth != Dp.Unspecified && minWidth != Dp.Unspecified) {
                                 Modifier.width(minWidth + (maxWidth - minWidth) * popupShowProgress)

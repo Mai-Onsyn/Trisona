@@ -64,6 +64,31 @@ fun Path.parallelogramPath(size: Size, angle: Float, radius: Float) {
     close()
 }
 
+fun Path.leftSharpParallelogramPath(size: Size, angle: Float, radius: Float) {
+    val h = size.height
+    val w = size.width
+    val slantWidth = h / tan(angle)
+
+
+    val ratio = slantWidth / h
+
+    reset()
+    moveTo(0f, h)
+    lineTo(w - slantWidth - radius, h)
+    quadraticTo(
+        w - slantWidth, h,
+        w - slantWidth + (radius * ratio), h - radius
+    )
+    lineTo(w - (radius * ratio), radius)
+    quadraticTo(
+        w, 0f,
+        w - radius, 0f
+    )
+    lineTo(0f, 0f)
+
+    close()
+}
+
 fun RoundedPolygon.toComposePath(reusedPath: Path = Path()): Path {
     reusedPath.rewind() // 清空旧数据以便复用
     this.cubics.forEachIndexed { index, cubic ->

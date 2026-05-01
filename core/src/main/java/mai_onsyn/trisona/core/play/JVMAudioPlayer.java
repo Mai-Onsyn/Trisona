@@ -16,7 +16,7 @@ import static mai_onsyn.trisona.Global.SYSTEM_AUDIO_FORMAT;
 
 public class JVMAudioPlayer extends AudioPlayer {
     private static final Logger log = LoggerFactory.getLogger(JVMAudioPlayer.class);
-    private static final double MILLIS_PER_BUFFER = 23.333333333333333333333333333333333333333333333333;
+    private static final double MILLIS_PER_BUFFER = 21.333333333333333333333333333333333333333333333333;
     private SourceDataLine dataLine;
     private boolean isDataLineReady = false;
 

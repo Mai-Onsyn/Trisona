@@ -20,17 +20,15 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import kotlinx.coroutines.delay
-import mai_onsn.trisona.module.util.ClickableRoundIconButtonScaleEffect
-import mai_onsn.trisona.module.util.formatMillisToTime
-import mai_onsn.trisona.module.util.interaction
+import mai_onsn.trisona.util.ClickableRoundIconButtonScaleEffect
+import mai_onsn.trisona.util.formatMillisToTime
+import mai_onsn.trisona.util.interaction
 import mai_onsn.trisona.theme.parallelogramPath
 import mai_onsn.trisona.theme.LocalAppTheme
-import mai_onsyn.trisona.core.TrisonaKotlinInterface
 import mai_onsyn.trisona.core.TrisonaKotlinInterface.artistSQL
 import mai_onsyn.trisona.core.TrisonaKotlinInterface.audioSQL
 import mai_onsyn.trisona.core.TrisonaKotlinInterface.musicSQL
 import mai_onsyn.trisona.core.TrisonaKotlinInterface.player
-import mai_onsyn.trisona.core.format
 import mai_onsyn.trisona.core.log
 import mai_onsyn.trisona.core.message.Music
 import org.jetbrains.skiko.Cursor
@@ -84,19 +82,16 @@ fun PlayBar(
             }
 
             //播放/暂停
-            var clickAction: ((Boolean) -> Unit)? = null
+//            var clickAction: ((Boolean) -> Unit)? = null
             var paused by remember { mutableStateOf(true) }
-            SideEffect {
+            LaunchedEffect(Unit) {
                 player.setOnQueueEnd {
                     paused = true
-                    clickAction?.invoke(true)
                     player.pause()
                 }
 
                 pauseCallback = {
                     paused = !paused
-                    clickAction?.invoke(paused)
-
                     if (paused) player.pause()
                     else player.play()
                 }
@@ -105,7 +100,9 @@ fun PlayBar(
                 modifier = Modifier.size(40.dp),
                 onClick = { pauseCallback?.invoke() }
             ) {
-                clickAction = MorphingPlayPauseButton(
+                MorphingPlayPauseButton(
+                    isPlaying = !paused,
+                    onToggle = {  },
                     modifier = Modifier
                         .size(28.dp)
                 )

@@ -84,6 +84,14 @@ public class TrisonaPlayer {
         if (onMusicStart != null) onMusicStart.run(music);
     }
 
+    public void specifyMusic(Music music) {
+        if (music != null && queue.contains(music)) {
+            player.setMusic(music);
+            currentMusic = music;
+            if (onMusicStart != null) onMusicStart.run(music);
+        } else throw new IllegalArgumentException("Music is not in the queue");
+    }
+
     public void setVolume(int volume) {
         player.setVolume(volume);
     }
@@ -97,7 +105,11 @@ public class TrisonaPlayer {
         if (msg == null) {
             return 1f;
         }
-        return (float) msg.pcmByteLength / msg.getBPS() * 1000f;
+        return (float) msg.pcmByteLength / (4*msg.sampleRate) * 1000f;
+    }
+
+    public boolean isPlaying() {
+        return player.isPlaying();
     }
 
     public Music getCurrentMusic() {

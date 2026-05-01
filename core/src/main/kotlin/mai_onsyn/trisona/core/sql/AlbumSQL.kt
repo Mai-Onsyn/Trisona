@@ -2,6 +2,7 @@ package mai_onsyn.trisona.core.sql
 
 import com.alibaba.fastjson2.JSONArray
 import mai_onsyn.trisona.core.data.Album
+import mai_onsyn.trisona.core.log
 
 class AlbumSQL(instance: SQLInstance): SQLOperator(instance) {
     companion object {
@@ -21,6 +22,10 @@ class AlbumSQL(instance: SQLInstance): SQLOperator(instance) {
     }
 
     fun storage(album: Album) = with(album) {
+        if (id == -1L) {
+            log.error("Album id has not been initialized, title {}", name)
+            return@with
+        }
         insert(TABLE_NAME, id, "name", name)
         if (picUrlNet != null)
             insert(TABLE_NAME, id, "pic_net", picUrlNet)

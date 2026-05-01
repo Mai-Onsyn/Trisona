@@ -1,6 +1,10 @@
-package mai_onsn.trisona.module.util
+package mai_onsn.trisona.util
 
 fun formatMillisToTime(millis: Float): String {
+    return formatMillisToTime(millis.toLong())
+}
+
+fun formatMillisToTime(millis: Int): String {
     return formatMillisToTime(millis.toLong())
 }
 

@@ -21,7 +21,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import mai_onsn.trisona.JImage
-import mai_onsn.trisona.module.util.TipArea
+import mai_onsn.trisona.module.layout.TipArea
 import mai_onsn.trisona.theme.LocalAppTheme
 import mai_onsyn.trisona.core.TrisonaKotlinInterface.albumSQL
 import mai_onsyn.trisona.core.message.Music
@@ -61,20 +61,20 @@ fun PlayInfo(
             modifier = Modifier,
             verticalArrangement = Arrangement.Center
         ) {
-            val tiText = music.title?: "Unknown Title"
-            val arText = music.artists?.joinToString(", ") { it.name } ?: "Unknown Artist"
-            TipArea(tiText) {
+            val titleText = music.title?: "Unknown Title"
+            val artistText = music.artists?.joinToString(", ") { it.name } ?: "Unknown Artist"
+            TipArea(titleText) {
                 Text(
-                    text = tiText,
+                    text = titleText,
                     fontSize = 14.sp,
                     color = theme.textBaseColor,
                     maxLines = 2,
                     overflow = TextOverflow.Ellipsis
                 )
             }
-            TipArea(arText) {
+            TipArea(artistText) {
                 Text(
-                    text = arText,
+                    text = artistText,
                     fontSize = 12.sp,
                     color = theme.textPromptColor,
                     maxLines = 1,

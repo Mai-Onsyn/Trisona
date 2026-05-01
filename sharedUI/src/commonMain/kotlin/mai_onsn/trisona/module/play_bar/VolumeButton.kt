@@ -17,19 +17,17 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.geometry.CornerRadius
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Shape
-import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.input.pointer.PointerIcon
 import androidx.compose.ui.input.pointer.pointerHoverIcon
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.window.Popup
 import kotlinx.coroutines.delay
 import mai_onsn.trisona.Config.animationBaseRate
 import mai_onsn.trisona.Config.volume
 import mai_onsn.trisona.module.layout.PopupBox
-import mai_onsn.trisona.module.util.interaction
-import mai_onsn.trisona.module.util.tweenSpecFloat
+import mai_onsn.trisona.util.interaction
 import mai_onsn.trisona.theme.LocalAppTheme
+import mai_onsn.trisona.util.ClickableRoundIconButtonScaleEffect
 import mai_onsyn.trisona.core.TrisonaKotlinInterface.player
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.skiko.Cursor
@@ -66,14 +64,16 @@ fun VolumeButton(
         popupAlignment = Alignment.BottomCenter,
         interactionContentAlignment = Alignment.Center,
         interactionContent = {
-            Icon(
-                painter = painterResource(volumeIcon),
-                contentDescription = null,
-                tint = theme.controlIconFill,
-                modifier = Modifier
-                    .size(20.dp)
-//                    .align(Alignment.Center)
-            )
+            ClickableRoundIconButtonScaleEffect(
+                modifier = Modifier.size(width)
+            ) {
+                Icon(
+                    painter = painterResource(volumeIcon),
+                    contentDescription = null,
+                    tint = theme.controlIconFill,
+                    modifier = Modifier.size(20.dp)
+                )
+            }
         }
     ) {
         VolumeSlider(

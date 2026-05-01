@@ -23,7 +23,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.unit.dp
 import mai_onsn.trisona.Config.animationBaseRate
-import mai_onsn.trisona.module.util.interaction
+import mai_onsn.trisona.util.interaction
 import mai_onsn.trisona.theme.LocalAppTheme
 import mai_onsyn.trisona.core.TrisonaKotlinInterface.player
 
