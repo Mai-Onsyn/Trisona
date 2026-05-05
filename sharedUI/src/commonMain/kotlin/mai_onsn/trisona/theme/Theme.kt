@@ -20,9 +20,7 @@ fun ThemeInterface(
     content: @Composable () -> Unit
 ) {
     val kClass = AppTheme::class
-
     val constructor = remember(kClass) { kClass.primaryConstructor!! }
-
     val properties = remember(kClass) { kClass.memberProperties }
 
     val args = constructor.parameters.associateWith { parameter ->

@@ -12,8 +12,9 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.*
 import com.jetbrains.JBR
-import mai_onsn.trisona.App
+import mai_onsn.trisona.ui.App
 import mai_onsn.trisona.module.play_bar.pauseCallback
+import mai_onsn.trisona.ui.util.CoreState
 import java.awt.Dimension
 
 fun main() = application {
@@ -29,7 +30,8 @@ fun main() = application {
         icon = painterResource("icon.png"),
         onKeyEvent = { keyEvent ->
             if (keyEvent.key == Key.Spacebar && keyEvent.type == KeyEventType.KeyDown) {
-                pauseCallback?.invoke()
+                CoreState.togglePlay()
+//                pauseCallback?.invoke()
 //                println(pauseCallback == null)
 //                println("space pressed")
             }

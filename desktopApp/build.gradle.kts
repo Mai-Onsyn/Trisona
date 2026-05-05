@@ -7,7 +7,9 @@ plugins {
 }
 
 repositories {
-//    mavenCentral()
+    maven { url = uri("https://maven.aliyun.com/repository/public") }
+    maven { url = uri("https://maven.aliyun.com/repository/google") }
+    mavenCentral()
 }
 
 dependencies {
@@ -15,6 +17,7 @@ dependencies {
     implementation("net.java.dev.jna:jna:5.14.0")
     implementation("net.java.dev.jna:jna-platform:5.14.0")
     implementation("org.jetbrains.runtime:jbr-api:1.10.0")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-swing:1.9.0")
 }
 
 compose.desktop {

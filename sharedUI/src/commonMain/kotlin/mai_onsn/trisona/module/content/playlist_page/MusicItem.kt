@@ -45,7 +45,8 @@ fun MusicItem(
     music: Music,
     ordinal: Int,
     onPlay: () -> Unit = {},
-    selected: Boolean = false
+    selected: Boolean = false,
+    playing: Boolean = false
 ) {
     val theme = LocalAppTheme.current
 
@@ -85,12 +86,16 @@ fun MusicItem(
                     .height(40.dp)
             ) {
                 MorphingPlayPauseButton(
-                    isPlaying = player.isPlaying,
+                    isPlaying = playing,
                     onToggle = {
-//                        player.specifyMusic()
+                        if (it) {
+                            onPlay()
+//                            player.specifyMusic(music)
+                        }
                     },
                     modifier = Modifier
-                        .size(20.dp),
+                        .size(20.dp)
+                        .align(Alignment.Center),
                     fill = theme.controlIconFill.copy(0.5f)
                 )
             }

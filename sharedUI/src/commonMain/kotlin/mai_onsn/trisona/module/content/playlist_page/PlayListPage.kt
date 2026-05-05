@@ -9,11 +9,17 @@ import androidx.compose.foundation.rememberScrollbarAdapter
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import kotlinx.coroutines.delay
 import mai_onsn.trisona.JImage
 import mai_onsn.trisona.module.layout.TipArea
 import mai_onsn.trisona.module.play_bar.pauseCallback
@@ -56,6 +62,15 @@ fun BoxScope.PlayListPage(
         }
     }
 
+    var playerIsPlaying by remember { mutableStateOf(player.isPlaying) }
+    var playerPlayingMusic by remember { mutableStateOf(player.currentMusic) }
+    LaunchedEffect(Unit) {
+        while (true) {
+            playerIsPlaying = player.isPlaying
+            playerPlayingMusic = player.currentMusic
+            delay(100)
+        }
+    }
     LazyColumn(
         modifier = modifier,
         verticalArrangement = Arrangement.spacedBy(2.dp),
@@ -119,7 +134,8 @@ fun BoxScope.PlayListPage(
                     if (!player.isPlaying) {
                         pauseCallback?.invoke()
                     }
-                }
+                },
+                playing = playerIsPlaying && playerPlayingMusic == item
             )
         }
     }

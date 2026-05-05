@@ -5,6 +5,13 @@ plugins {
     alias(libs.plugins.android.kmp.library)
 }
 
+repositories {
+    maven { url = uri("https://maven.aliyun.com/repository/public") }
+    maven { url = uri("https://maven.aliyun.com/repository/google") }
+    mavenCentral()
+    google()
+}
+
 kotlin {
     androidTarget() //We need the deprecated target to have working previews
 
@@ -30,6 +37,7 @@ kotlin {
             implementation("org.apache.logging.log4j:log4j-slf4j-impl:2.25.3")
 
             implementation("org.jetbrains.kotlin:kotlin-reflect:2.1.21")
+            implementation("com.alibaba.fastjson2:fastjson2:2.0.61")
         }
 
         commonTest.dependencies {

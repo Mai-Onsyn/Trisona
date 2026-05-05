@@ -75,7 +75,7 @@ object TrisonaKotlinInterface {
             name = "NetEast Download"
             creator = "Trisona"
             createDate = Date(System.currentTimeMillis())
-            coverPath = UniversalPath(null, "D:\\Users\\Desktop\\Files\\Picture\\emotions\\45.png")
+            coverPath = UniversalPath(null, "D:\\Users\\Desktop\\image_142.png")
         })
         testPlayList?.addAll(loadMusics)
 //        testPlayList?.let { playListSQL.storage(it) }
