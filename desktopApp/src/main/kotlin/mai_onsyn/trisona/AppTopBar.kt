@@ -17,7 +17,7 @@ import com.sun.jna.Pointer
 import com.sun.jna.Structure
 import com.sun.jna.platform.win32.User32
 import com.sun.jna.platform.win32.WinDef
-import mai_onsn.trisona.module.InputAreaBoundInWindow
+import mai_onsyn.trisona.module.InputAreaBoundInWindow
 import java.awt.*
 import java.awt.event.MouseEvent
 import javax.swing.JFrame

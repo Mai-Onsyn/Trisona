@@ -12,9 +12,8 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.*
 import com.jetbrains.JBR
-import mai_onsn.trisona.ui.App
-import mai_onsn.trisona.module.play_bar.pauseCallback
-import mai_onsn.trisona.ui.util.CoreState
+import mai_onsyn.trisona.ui.App
+import mai_onsyn.trisona.ui.util.CoreState
 import java.awt.Dimension
 
 fun main() = application {

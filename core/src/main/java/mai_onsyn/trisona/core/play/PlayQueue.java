@@ -87,7 +87,7 @@ public class PlayQueue extends PlayList {
 
     public void setPlayMode(PlayMode playMode) {
         this.playMode = playMode;
-        log.debug("Play mode set to {}", playMode);
+//        log.debug("Play mode set to {}", playMode);
     }
 
     public PlayMode getPlayMode() {

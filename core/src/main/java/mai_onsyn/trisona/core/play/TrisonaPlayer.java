@@ -112,6 +112,10 @@ public class TrisonaPlayer {
         queue.setPlayMode(PlayQueue.PlayMode.values()[mode]);
     }
 
+    public void setPlayMode(PlayQueue.PlayMode mode) {
+        queue.setPlayMode(mode);
+    }
+
     /* -------------------- 状态查询 -------------------- */
 
     public boolean isPlaying() {
@@ -134,6 +138,10 @@ public class TrisonaPlayer {
 
     public int getVolume() {
         return player.getVolume();
+    }
+
+    public PlayQueue.PlayMode getPlayMode() {
+        return queue.getPlayMode();
     }
 
     /* -------------------- 设置 -------------------- */
