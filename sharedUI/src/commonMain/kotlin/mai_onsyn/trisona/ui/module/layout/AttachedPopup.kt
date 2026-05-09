@@ -3,7 +3,10 @@ package mai_onsyn.trisona.ui.module.layout
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Shape
@@ -25,10 +28,11 @@ fun AttachedPopup(
     triggerLayoutRect: IntRect,
     maxWidth: Dp = Dp.Unspecified,
     maxHeight: Dp = Dp.Unspecified,
-    minWidth: Dp = 0.dp, // 默认最小值给 0.dp 以防报错
-    minHeight: Dp = 0.dp,
+    minWidth: Dp = Dp.Unspecified, // 默认最小值给 0.dp 以防报错
+    minHeight: Dp = Dp.Unspecified,
     followCursor: Boolean = false,
-    cursorOffset: IntOffset = IntOffset(0, 0),
+    cursorOffset: IntOffset = IntOffset.Zero,
+    cursorPos: IntOffset = IntOffset.Zero,
     showProgress: Float = 1f,
     offset: IntOffset = IntOffset.Zero,
     align: Alignment = Alignment.TopStart,
@@ -38,7 +42,7 @@ fun AttachedPopup(
     content: @Composable () -> Unit
 ) {
     // 处理跟手偏移逻辑
-    val finalOffset = if (followCursor) offset + cursorOffset else offset
+    val finalOffset = if (followCursor) offset + cursorOffset + cursorPos else offset
 
     // 使用 remember 避免 Provider 频繁重建
     val popupPositionProvider = remember(finalOffset, align, triggerLayoutRect) {
@@ -69,9 +73,7 @@ fun AttachedPopup(
                     maxWidth = maxWidth,
                     maxHeight = maxHeight
                 )
-        ) {
-            content()
-        }
+        ) { content() }
     }
 }
 
@@ -105,8 +107,8 @@ fun Modifier.animatedPopupSize(
     val targetH = if (maxHeight.isSpecified) maxH else placeable.height
 
     // 确定动画的起点大小 (Min Size)
-    val minW = if (minWidth.isSpecified) minWidth.roundToPx() else 0
-    val minH = if (minHeight.isSpecified) minHeight.roundToPx() else 0
+    val minW = if (minWidth.isSpecified) minWidth.roundToPx() else targetW
+    val minH = if (minHeight.isSpecified) minHeight.roundToPx() else targetH
 
     // 根据 showProgress (0f ~ 1f) 进行线性插值
     val currentW = minW + ((targetW - minW) * showProgress).roundToInt()

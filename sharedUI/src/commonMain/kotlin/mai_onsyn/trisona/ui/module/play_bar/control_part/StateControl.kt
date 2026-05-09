@@ -146,14 +146,14 @@ private fun WithPopup(
             )
         }
     )
-    var volumeButtonRect by remember { mutableStateOf(IntRect.Zero) }
+    var layoutRect by remember { mutableStateOf(IntRect.Zero) }
     WithCircleEffect(32.dp, {}, Modifier
         .interaction(
             onHoveredChange = { hovered = it },
             onPressedChange = { pressed = it },
         )
         .onGloballyPositioned { coordinates ->
-            volumeButtonRect = coordinates.boundsInWindow().toIntRect()
+            layoutRect = coordinates.boundsInWindow().toIntRect()
         }
     ) {
         Icon(
@@ -165,7 +165,7 @@ private fun WithPopup(
                 .align(Alignment.Center)
         )
         AttachedPopup(
-            triggerLayoutRect = volumeButtonRect,
+            triggerLayoutRect = layoutRect,
             minWidth = minWidth,
             maxWidth = maxWidth,
             minHeight = minHeight,

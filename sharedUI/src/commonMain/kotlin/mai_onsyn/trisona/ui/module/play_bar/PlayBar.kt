@@ -7,14 +7,14 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.dropShadow
 import androidx.compose.ui.graphics.BlendMode
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.graphics.shadow.Shadow
 import androidx.compose.ui.unit.dp
 import mai_onsyn.trisona.ui.module.play_bar.control_part.StateControl
+import mai_onsyn.trisona.ui.module.play_bar.info_part.InfoControl
 import mai_onsyn.trisona.ui.module.play_bar.progress_part.ProgressControl
 import mai_onsyn.trisona.ui.theme.TrisonaTheme
-import mai_onsyn.trisona.util.background
+import mai_onsyn.trisona.ui.util.CoreState.currentMusic
 
 @Composable
 fun PlayBar(
@@ -42,22 +42,29 @@ fun PlayBar(
                 .padding(horizontal = 256.dp)
                 .fillMaxWidth()
                 .align(Alignment.Center)
-//                .background(Color.Black)
         ) {
             // 控制部分
             StateControl(
                 modifier = Modifier
                     .fillMaxWidth()
                     .weight(1.5f)
-//                    .background(Color.Blue)
             )
             // 进度条
             ProgressControl(
                 modifier = Modifier
                     .fillMaxWidth()
                     .weight(1f)
-//                    .background(Color.Red)
             )
         }
+
+        // 信息部分
+        InfoControl(
+            music = currentMusic,
+            modifier = Modifier
+                .height(60.dp)
+                .width(256.dp)
+                .align(Alignment.CenterStart)
+                .padding(start = TrisonaTheme.PADDING_MEDIUM)
+        )
     }
 }

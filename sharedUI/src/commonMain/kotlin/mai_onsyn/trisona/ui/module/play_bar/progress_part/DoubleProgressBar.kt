@@ -41,10 +41,10 @@ fun DoubleProgressBar(
             .interaction(
                 onPress = { isDragging = true },
                 onRelease = {
-                    onProgressChanged(it.changes.first().position.x / size.width)
+                    onProgressChanged((it.changes.first().position.x / size.width).coerceIn(0f, 1f))
                     isDragging = false
                 },
-                onDrag = { innerPrimaryProgress = it.changes.first().position.x / size.width },
+                onDrag = { innerPrimaryProgress = (it.changes.first().position.x / size.width).coerceIn(0f, 1f) },
             )
     ) {
         val secondaryWidth = size.width * secondaryProgress.coerceIn(0f, 1f)

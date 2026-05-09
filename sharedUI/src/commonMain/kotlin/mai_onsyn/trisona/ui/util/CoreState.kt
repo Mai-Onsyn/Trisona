@@ -14,7 +14,7 @@ import mai_onsyn.trisona.core.message.Music
 
 object CoreState {
     var isPlaying by mutableStateOf(false)
-    var currentMusic by mutableStateOf<Music?>(null)
+    var currentMusic by mutableStateOf<Music?>(player.currentMusic)
 
     var playingPosSeconds by mutableStateOf(0f)
     var playingDurationSeconds by mutableStateOf(0f)

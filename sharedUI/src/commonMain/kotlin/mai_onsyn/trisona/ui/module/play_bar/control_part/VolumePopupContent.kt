@@ -67,7 +67,7 @@ fun VolumePopupContent(
 fun VerticalSlider(
     modifier: Modifier = Modifier,
     progress: Float,
-    color: Color = TrisonaTheme.colorScheme.primary,
+    color: Color = TrisonaTheme.colorScheme.secondary,
     trackColor: Color = TrisonaTheme.colorScheme.surfaceLow,
     onProgressChanged: (Float) -> Unit = {}
 ) {

@@ -1,0 +1,11 @@
+{
+  "ui": {
+    "play_bar": {
+      "sequence": "顺序播放",
+      "shuffle": "随机播放",
+      "repeat": "单曲循环",
+      "loop": "列表循环",
+      "random": "完全随机"
+    }
+  }
+}

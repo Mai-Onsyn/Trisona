@@ -27,6 +27,7 @@ object TrisonaTheme {
     val textScheme: TextScheme
         @Composable @ReadOnlyComposable get() = LocalTextScheme.current
 
+    val PADDING_MINI = 4.dp
     val PADDING_SMALL = 8.dp
     val PADDING_MEDIUM = 12.dp
     val PADDING_LARGE = 16.dp

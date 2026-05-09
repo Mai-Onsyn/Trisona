@@ -18,6 +18,7 @@ dependencies {
     implementation("net.java.dev.jna:jna-platform:5.14.0")
     implementation("org.jetbrains.runtime:jbr-api:1.10.0")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-swing:1.9.0")
+    implementation(files("libs/window-styler-jvm-0.4.0.jar"))
 }
 
 compose.desktop {
@@ -42,7 +43,6 @@ compose.desktop {
         }
 
         jvmArgs += listOf(
-//            "-Dfile.encoding=UTF-8",
             "--add-opens=java.desktop/java.awt=ALL-UNNAMED",
             "--add-opens=java.desktop/sun.awt=ALL-UNNAMED",
             "--add-opens=java.desktop/sun.awt.windows=ALL-UNNAMED",

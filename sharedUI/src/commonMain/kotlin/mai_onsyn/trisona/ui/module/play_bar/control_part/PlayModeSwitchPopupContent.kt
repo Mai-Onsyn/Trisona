@@ -22,19 +22,13 @@ import mai_onsyn.trisona.ui.theme.TrisonaTheme
 import mai_onsyn.trisona.ui.util.Config.playerPlayMode
 import mai_onsyn.trisona.ui.util.modifier.buttonEffect
 import mai_onsyn.trisona.ui.util.modifier.interaction
+import mai_onsyn.trisona.ui.util.t
 import mai_onsyn.trisona.ui.util.tweenSpecColor
 import mai_onsyn.trisona.ui.util.tweenSpecDp
 import org.jetbrains.compose.resources.DrawableResource
 import org.jetbrains.compose.resources.painterResource
 import trisona.sharedui.generated.resources.*
 
-private val playModes = listOf(
-    "顺序播放" to Res.drawable.icon_play_sequence,
-    "循环播放" to Res.drawable.icon_play_loop,
-    "单曲循环" to Res.drawable.icon_play_repeat,
-    "随机播放" to Res.drawable.icon_play_shuffle,
-    "任意随机" to Res.drawable.icon_play_random
-)
 private val itemHeight = 28.dp
 
 @Composable
@@ -57,7 +51,7 @@ fun PlayModeSwitchPopupContent(
             .padding(TrisonaTheme.PADDING_SMALL)
             .drawWithContent {
                 drawRoundRect(
-                    color = colorScheme.primary,
+                    color = colorScheme.secondary,
                     cornerRadius = CornerRadius(radius.toPx(), radius.toPx()),
                     size = size.copy(height = itemHeight.toPx()),
                     topLeft = Offset(0f, highlightY.toPx())
@@ -65,7 +59,13 @@ fun PlayModeSwitchPopupContent(
                 drawContent()
             }
     ) {
-        playModes.forEachIndexed { index, (text, icon) ->
+        listOf(
+            t("ui.play_bar.sequence") to Res.drawable.icon_play_sequence,
+            t("ui.play_bar.loop") to Res.drawable.icon_play_loop,
+            t("ui.play_bar.repeat") to Res.drawable.icon_play_repeat,
+            t("ui.play_bar.shuffle") to Res.drawable.icon_play_shuffle,
+            t("ui.play_bar.random") to Res.drawable.icon_play_random
+        ).forEachIndexed { index, (text, icon) ->
             val color by animateColorAsState(
                 targetValue = if (index == selectedIndex) colorScheme.onPrimary else colorScheme.onSurface,
                 animationSpec = tweenSpecColor

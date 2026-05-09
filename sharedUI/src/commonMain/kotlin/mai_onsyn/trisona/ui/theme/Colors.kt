@@ -26,7 +26,7 @@ val LightColorScheme = ColorScheme(
     inverseSurface = Color(0xFF2F3033),
     inverseOnSurface = Color(0xFFF1F0F4),
 
-    background = Color(188, 218, 249),
+    background = Color(188, 218, 249, 120),
     onBackground = Color(0xFF1A1C1E),
 
     error = Color(0xFF1A1A),
@@ -81,5 +81,5 @@ val DarkColorScheme = ColorScheme(
     outline = Color(0xFF8E9194),
     shadow = Color(0xFF000000),
     shadowStained = Color(0xFF000000),
-    scrim = Color(0xFF000000).copy(alpha = 0.5f)
+    scrim = Color(0xFF868686).copy(alpha = 0.5f)
 )

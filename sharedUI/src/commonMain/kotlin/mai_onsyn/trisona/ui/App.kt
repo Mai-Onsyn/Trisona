@@ -2,7 +2,9 @@ package mai_onsyn.trisona.ui
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -20,6 +22,8 @@ import mai_onsyn.trisona.ui.util.Config.playerPlayMode
 import mai_onsyn.trisona.ui.util.Config.playerVolume
 import mai_onsyn.trisona.core.TrisonaKotlinInterface.player
 import mai_onsyn.trisona.core.play.PlayQueue
+import mai_onsyn.trisona.ui.page.MainPage
+import mai_onsyn.trisona.ui.util.pointerHookListener
 
 @Composable
 fun onStart() {
@@ -35,7 +39,7 @@ fun App(vararg args: String) {
     TrisonaTheme(
         colorScheme = if (isDarkMode) DarkColorScheme else LightColorScheme
     ) {
-        Box(
+        Column(
             modifier = Modifier
                 .fillMaxSize()
                 .background(TrisonaTheme.colorScheme.background)
@@ -43,10 +47,10 @@ fun App(vararg args: String) {
 //            GasCanvas(modifier = Modifier.fillMaxSize())
 //            DynamicTriangleMesh(modifier = Modifier.fillMaxSize())
 
+            MainPage(modifier = Modifier.weight(1f).fillMaxWidth())
             PlayBar(
                 modifier = Modifier
                     .height(80.dp)
-                    .align(Alignment.BottomCenter)
             )
         }
     }
